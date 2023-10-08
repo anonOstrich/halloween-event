@@ -11,7 +11,7 @@ async function hasProvidedSecret() {
 export default async function Page() {
     const secretProvided = await hasProvidedSecret()
 
-    if (!secretProvided) {
+    if (false && !secretProvided) {
         return <SignUpSecretForm />
     }
 
