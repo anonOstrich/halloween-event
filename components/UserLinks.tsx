@@ -9,6 +9,6 @@ export default function UserLinks() {
     }
     return <>
         <li className='px-5 py-3'><Link href="/sign-in">sign in</Link></li>
-        <li className='px-5 py-3'><Link href="/sign-up">sign out</Link></li>
+        <li className='px-5 py-3'><Link href="/sign-up">sign up</Link></li>
     </>
 }

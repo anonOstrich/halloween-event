@@ -1,17 +1,13 @@
-import { readFile, writeFile } from "fs/promises";
-import {resolve} from 'path'
+import { PrismaClient } from '@prisma/client'
 
-export async function getDBContents(): Promise<{
-    halloweenSecret: string
-}> {
-   
-    const contents = await readFile('json/data.json', 'utf-8')
-    console.log(contents)
-    return JSON.parse(contents)
-}   
+const globalForPrisma = globalThis as unknown as {
+    prisma: PrismaClient | undefined
+}
 
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({
+    log: ['query']
+})
 
-export async function setSecret(secret: string): Promise<void> {
-    const contents = JSON.stringify({halloweenSecret: secret}, null, 2)
-    await writeFile('json/data.json', contents, 'utf-8')
+if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.prisma = prisma
 }

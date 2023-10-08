@@ -1,6 +1,8 @@
-import { setSecret } from "@/utils/db";
-import { redirect } from "next/navigation";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import {cookies} from 'next/headers'
+import { randomUUID } from "crypto";
+import { prisma } from "@/utils/db";
+import { getSecret } from "@/utils/auth";
 
 export function GET(request: NextRequest) {
     return Response.json(":#")
@@ -13,10 +15,18 @@ export async function POST(request: NextRequest) {
         return Response.json({}, {status: 403, statusText: 'Cannot be empty, sorry!'})
     }
 
-    // Could also check: you have not given the secret yet
+    if (value !== getSecret()) {
+        return Response.json({message: "Invalid secret. Ask from the Person and try again."}, {status: 403})
+    }
 
-    await setSecret(value.toString())
+    const userFingerPrint = randomUUID()
+    cookies().set('fingerPrint', userFingerPrint)
+    await prisma.possibleRegistrar.create({
+        data: {
+            hash: userFingerPrint
+        }
+    })
     const originURI = new URL(request.url)
-    const something = new URL('sign-up', originURI.origin)
-    return Response.redirect(something.href)
+    const redirectURI = new URL('sign-up', originURI.origin)
+    return Response.redirect(redirectURI.href)
 }

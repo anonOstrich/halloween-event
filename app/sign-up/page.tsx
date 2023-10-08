@@ -1,17 +1,25 @@
 import SignUpSecretForm from "@/components/SignUpSecretForm";
-import { getDBContents } from "@/utils/db";
+import { getSecret } from "@/utils/auth";
+import { prisma } from "@/utils/db";
 import { SignUp } from "@clerk/nextjs";
+import { cookies } from "next/headers";
 
-async function hasProvidedSecret() {
-    const db = await getDBContents()
-    console.log('in db: ', db.halloweenSecret)
-    return db.halloweenSecret === 'salaisuus'
+async function hasProvidedSecret(fingerPrint: string | undefined) {
+    if (fingerPrint === undefined) return false
+
+    const row = await prisma.possibleRegistrar.findFirst({
+        where: {
+            hash: fingerPrint
+        }
+    })
+    return row !== null
 }
 
 export default async function Page() {
-    const secretProvided = await hasProvidedSecret()
+    const fingerPrint = cookies().get('fingerPrint')?.value
+    const secretProvided = await hasProvidedSecret(fingerPrint)
 
-    if (false && !secretProvided) {
+    if (!secretProvided) {
         return <SignUpSecretForm />
     }
 
