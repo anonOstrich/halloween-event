@@ -1,13 +1,20 @@
 'use client'
 
-import { reactToMovie } from "@/utils/api";
+import { getMovieReaction, reactToMovie } from "@/utils/api";
 import { Reaction as ReactionType } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
-export default function Reaction({ reaction, movieId }: { reaction: ReactionType | null, movieId: number }) {
-    const [type, setType] = useState(reaction?.type)
+export default function Reaction({ movieId }: { movieId: number }) {
+    const [type, setType] = useState<ReactionType['type']>()
+    useEffect(() => {
+        async function doStuff() {
+            const reaction = await getMovieReaction(movieId)
+            setType(reaction.type)
+        }
+        doStuff()
+    }, [])
 
     function handlerCreator(reaction: ReactionType['type']) {
         return async function handler() {

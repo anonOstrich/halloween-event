@@ -23,7 +23,7 @@ export async function POST(req: NextRequest){
             }
         }
     })
-    revalidatePath(`/movies/${movieId}`)
+
     return Response.json({
         data: createdReaction
     }, {status: 200})
