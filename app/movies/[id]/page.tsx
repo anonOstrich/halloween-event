@@ -1,3 +1,4 @@
+import Reaction from "@/components/Reaction"
 import { prisma } from "@/utils/db"
 
 
@@ -19,10 +20,24 @@ export default async function MoviePage({ params }: { params: { id: string, } })
     }
     const user = movie.user
 
-    return <div>
-        <h2>{movie.title}</h2>
-        <p>Year: {movie.year}</p>
-        <p>Description: {movie.description}</p>
-        <p>Added by: {user.email}</p>
-    </div>
+
+    const reaction = await prisma.reaction.findFirst({
+        where: {
+            movieId: movie.id,
+            userId: user.id
+        }
+    })
+
+
+
+    return <main className="flex justify-between max-w-2xl mx-auto">
+        <article>
+            <h2>{movie.title}</h2>
+            <p>Year: {movie.year}</p>
+            <p>Description: {movie.description}</p>
+            <p>Added by: {user.email}</p>
+        </article>
+
+        {<Reaction reaction={reaction} movieId={movie.id} />}
+    </main>
 }

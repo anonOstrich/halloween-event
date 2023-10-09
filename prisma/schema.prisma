@@ -53,6 +53,8 @@ model Reaction {
     movie Movie @relation(fields: [movieId], references: [id])
 
     type ReactionType
+
+    @@unique([userId, movieId])
 }
 
 enum ReactionType {
