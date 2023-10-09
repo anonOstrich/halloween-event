@@ -21,14 +21,6 @@ export default async function MoviePage({ params }: { params: { id: string, } })
     const user = movie.user
 
 
-    const reaction = await prisma.reaction.findFirst({
-        where: {
-            movieId: movie.id,
-            userId: user.id
-        }
-    })
-
-
 
     return <main className="flex justify-between max-w-2xl mx-auto">
         <article>
@@ -38,6 +30,6 @@ export default async function MoviePage({ params }: { params: { id: string, } })
             <p>Added by: {user.email}</p>
         </article>
 
-        {<Reaction reaction={reaction} movieId={movie.id} />}
+        {<Reaction movieId={movie.id} />}
     </main>
 }
