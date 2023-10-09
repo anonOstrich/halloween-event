@@ -6,6 +6,7 @@ export const pages: Array<Page> = [
     {url: '/', title: 'home'},
     {url: '/movies', title: 'movies'},
     {url: '/newsletter', title: 'newsletter'},
+    {url: '/details', title: 'details'},
 ]
 
 

@@ -4,8 +4,11 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
+  --foreground-color: rgb(var(--foreground-rgb));
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --border-radius: 15px;
+
 }
 
 * {
@@ -37,4 +40,20 @@ body {
 
 h1 {
   font-size: 3rem;
+}
+
+input, textarea {
+  color: rgb(var(--background-end-rgb));
+}
+
+.button {
+  border: 3px var(--foreground-color) solid;
+  padding: 1rem 0.5rem;
+  border-radius: var(--border-radius);
+  transition: all 1s;
+}
+
+.button:hover {
+  color: rgb(var(--background-end-rgb));
+  background-color: var(--foreground-color);
 }

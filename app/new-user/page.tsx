@@ -1,9 +1,32 @@
-import { auth } from "@clerk/nextjs"
+import { prisma } from "@/utils/db"
+import { auth, currentUser } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
 
-export default function NewUser() {
-    const { userId } = auth()
-    if (!userId) {
+export default async function NewUser() {
+    const user = await currentUser()
+    if (!user) {
         return <div>No user access should not be possible 🫢</div>
     }
-    return <div>You are user with the id {userId}</div>
+
+    const clerkId = user.id
+
+    const existingUser = await prisma.user.findFirst({
+        where: {
+            clerkId
+        }
+    })
+
+    if (existingUser != null) {
+        redirect('/')
+        return
+    }
+
+    await prisma.user.create({
+        data: {
+            email: user.emailAddresses[0].emailAddress,
+            clerkId: clerkId
+        }
+    })
+
+    redirect('/movies')
 }

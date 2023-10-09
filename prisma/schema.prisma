@@ -9,11 +9,54 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model User {
-    id Int @id @default(autoincrement())
-    email String @unique
-}
-
+// Simply for registering user. Not needed after that -> could be more temporary than in the database, too
 model PossibleRegistrar {
     hash String @id 
+}
+
+model User {
+    id Int @id @default(autoincrement())
+      createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    clerkId String @unique
+    email String @unique
+    addedMovies Movie[]
+
+    reactions Reaction[]
+}
+
+// TODO: technical specs, availibility on different formats
+model Movie {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    title String
+    year Int
+    description String
+
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+
+    reactions Reaction[]
+}
+
+
+model Reaction {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+    
+    movieId Int
+    movie Movie @relation(fields: [movieId], references: [id])
+
+    type ReactionType
+}
+
+enum ReactionType {
+    POSITIVE
+    NEGATIVE
+    NEUTRAL
 }
