@@ -17,9 +17,6 @@ export default function Reaction({ reaction, movieId }: { reaction: ReactionType
     }
 
 
-
-
-
     return <div><div className="flex gap-2 items-start">
         <button onClick={handlerCreator('NEGATIVE')} className={`border-2 px-3 hover:bg-red-400 ${type === "NEGATIVE" ? 'bg-red-700' : ''}`}>-</button>
         <button onClick={handlerCreator('NEUTRAL')} className={`border-2 px-3 hover:bg-blue-400 ${type === "NEUTRAL" ? 'bg-blue-700' : ''}`}>.</button>

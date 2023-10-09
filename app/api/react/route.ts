@@ -1,5 +1,6 @@
 import { getUserId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
+import { revalidatePath } from "next/cache";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest){
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest){
             }
         }
     })
+    revalidatePath(`/movies/${movieId}`)
     return Response.json({
         data: createdReaction
     }, {status: 200})
