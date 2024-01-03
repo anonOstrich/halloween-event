@@ -1,3 +1,4 @@
+import MovieApiSearch from "@/components/MovieApiSearch"
 import { prisma } from "@/utils/db"
 import { auth } from "@clerk/nextjs"
 import { redirect } from "next/navigation"
@@ -38,9 +39,11 @@ async function handleAddMovie(data: FormData) {
 
 export default async function AddMoviePage() {
     const currentYear = (new Date()).getFullYear()
+    console.log("Where does this log? A: the server")
 
     return <main className="max-w-2xl mx-auto">
         <p>TODO: Ohjeistus. (Minkälainen on hyvä? Mitä toiveita on elokuville? Mitä rajoja ihmisillä on elokuville?)</p>
+        <MovieApiSearch />
         <form action={handleAddMovie} className="flex flex-col gap-10">
             <div className="flex justify-center gap-4">
                 <label htmlFor="title">Title</label>
