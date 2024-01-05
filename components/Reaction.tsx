@@ -8,10 +8,14 @@ import { useEffect, useState } from "react";
 
 export default function Reaction({ movieId }: { movieId: number }) {
     const [type, setType] = useState<ReactionType['type']>()
+
     useEffect(() => {
         async function doStuff() {
             const reaction = await getMovieReaction(movieId)
-            setType(reaction.type)
+            if (reaction != null) {
+                setType(reaction.type)
+            }
+           
         }
         doStuff()
     }, [])
@@ -22,7 +26,6 @@ export default function Reaction({ movieId }: { movieId: number }) {
             setType(newReaction.type)
         }
     }
-
 
     return <div><div className="flex gap-2 items-start">
         <button onClick={handlerCreator('NEGATIVE')} className={`border-2 px-3 hover:bg-red-400 ${type === "NEGATIVE" ? 'bg-red-700' : ''}`}>-</button>
