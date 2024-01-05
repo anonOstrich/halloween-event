@@ -13,8 +13,10 @@ export default function AddMoviePage() {
 
 
 
-    function fillFormWithMovieIdDetails() {
-
+    function fillFormWithMovieDetails(title: string, year: number, description: string) {
+        setTitle(title)
+        setYear(year)
+        setDescription(description)
     }
 
     const handleFormSubmission: FormEventHandler<HTMLFormElement> = (e) => {
@@ -32,7 +34,7 @@ export default function AddMoviePage() {
 
     return <main className="max-w-2xl mx-auto">
         <p>TODO: Ohjeistus. (Minkälainen on hyvä? Mitä toiveita on elokuville? Mitä rajoja ihmisillä on elokuville?)</p>
-        <MovieApiSearch />
+        <MovieApiSearch completeMovieInformationCallBack={fillFormWithMovieDetails} />
         <form onSubmit={handleFormSubmission} className="flex flex-col gap-10">
             <div className="flex justify-center gap-4">
                 <label htmlFor="title">Title</label>
