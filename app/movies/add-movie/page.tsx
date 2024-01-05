@@ -1,63 +1,58 @@
+'use client'
+
+
 import MovieApiSearch from "@/components/MovieApiSearch"
-import { prisma } from "@/utils/db"
-import { auth } from "@clerk/nextjs"
-import { redirect } from "next/navigation"
+import { addNewMovie } from "@/utils/api"
+import { FormEventHandler, useState } from "react"
 
-// Trying out a server action instead of using the REST api
-async function handleAddMovie(data: FormData) {
-    'use server'
-    const title = data.get('title')
-    const year = data.get('year')
-    const description = data.get('description')
 
-    if (!title || !year || !description) {
-        return
+export default function AddMoviePage() {
+    const [title, setTitle] = useState<string>('')
+    const [year, setYear] = useState<number>(2000)
+    const [description, setDescription] = useState<string>('')
+
+
+
+    function fillFormWithMovieIdDetails() {
+
     }
 
-    const { userId: clerkId } = auth()
-
-    const user = await prisma.user.findFirst({
-        where: {
-            clerkId: clerkId!
-        }
-    })
-
-    await prisma.movie.create({
-        data: {
-            userId: user!.id,
-            title: title.toString(),
-            year: Number(year.toString()),
-            description: description.toString(),
-
-        }
-    })
-    redirect('/movies')
-    console.log(title, year, description)
-    console.log("Someone added a movie :)))")
-}
+    const handleFormSubmission: FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault()
+        addNewMovie(title, year, description)
+        setTitle('')
+        setYear(2000)
+        setDescription('')
+        // TODO: redirect to the movie page? Maybe after a success message?
+    }
 
 
-export default async function AddMoviePage() {
     const currentYear = (new Date()).getFullYear()
-    console.log("Where does this log? A: the server")
+    
 
     return <main className="max-w-2xl mx-auto">
         <p>TODO: Ohjeistus. (Minkälainen on hyvä? Mitä toiveita on elokuville? Mitä rajoja ihmisillä on elokuville?)</p>
         <MovieApiSearch />
-        <form action={handleAddMovie} className="flex flex-col gap-10">
+        <form onSubmit={handleFormSubmission} className="flex flex-col gap-10">
             <div className="flex justify-center gap-4">
                 <label htmlFor="title">Title</label>
-                <input id="title" name="title" type="text" required />
+                <input id="title" name="title" type="text" value={title} onChange={e => setTitle(e.target.value)} required />
             </div>
 
             <div className="flex justify-center gap-4">
                 <label htmlFor="year">Year</label>
-                <input id="year" name="year" type="number" min={1880} max={currentYear} required />
+                <input id="year" name="year" type="number" min={1880} max={currentYear} 
+                value={year}
+                onChange={e => setYear(Number(e.target.value))}
+                required />
             </div>
 
             <div className="flex justify-center gap-4">
                 <label htmlFor="description" className="align-self-center self-center">Description</label>
-                <textarea name="description" id="description" required></textarea>
+                <textarea name="description" id="description"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                required></textarea>
 
             </div>
 

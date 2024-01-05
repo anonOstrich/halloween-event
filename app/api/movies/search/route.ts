@@ -3,7 +3,6 @@ import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest){
     const access_token = process.env["MOVIE_ACCESS_TOKEN"]
-    console.log(process.env["MOVIE_ACCESS_TOKEN"])
 
     // TODO: Use the dynamically provided value
     const reqBody = await req.json()
@@ -18,9 +17,7 @@ export async function POST(req: NextRequest){
     }})
 
     // console.log('from the api: ', something)
-    console.log(something.status, something.statusText)
     const jsonResponse = await something.json();
-    console.log('Received response: ', JSON.stringify(jsonResponse, null, 2))
 
     const foundMovies: Array<any> = jsonResponse.results;
 

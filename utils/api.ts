@@ -30,3 +30,19 @@ export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Arra
     const { data } = await response.json();
     return data.movies;
 }
+
+export async function addNewMovie(title: string, year: number, description: string): Promise<string> {
+    const response = await fetch('/api/movies', {
+        method: 'POST',
+        body: JSON.stringify({
+            title,
+            year,
+            description
+        })
+    })
+    const {data} = await response.json();
+
+    console.log('this came from the backend after adding a new movie:')
+    console.log(JSON.stringify(data, null, 2))
+    return data.message
+}
