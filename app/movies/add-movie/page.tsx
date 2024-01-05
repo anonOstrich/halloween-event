@@ -3,13 +3,18 @@
 
 import MovieApiSearch from "@/components/MovieApiSearch"
 import { addNewMovie } from "@/utils/api"
+import { useRouter } from "next/navigation"
 import { FormEventHandler, useState } from "react"
+import { toast,  } from "react-toastify"
 
 
 export default function AddMoviePage() {
     const [title, setTitle] = useState<string>('')
     const [year, setYear] = useState<number>(2000)
     const [description, setDescription] = useState<string>('')
+
+
+    const something = useRouter()
 
 
 
@@ -25,6 +30,11 @@ export default function AddMoviePage() {
         setTitle('')
         setYear(2000)
         setDescription('')
+        // Tests on how to use toasting
+        //toast("Successfully added")
+        //toast.error('wrong?')
+        toast.success('Successfully added')
+        something.push('/movies')
         // TODO: redirect to the movie page? Maybe after a success message?
     }
 
