@@ -4,6 +4,8 @@ import { getMoviesFromExternalAPI } from "@/utils/api"
 import { Movie } from "@/utils/types"
 import { ChangeEvent, useEffect, useState } from "react"
 
+const TIMEOUT_DELAY_IN_MS = 2_000
+
 interface MovieApiSearchProps {
     completeMovieInformationCallBack: (title: string, year: number, description: string) => void
 }
@@ -11,19 +13,38 @@ interface MovieApiSearchProps {
 export default function MovieApiSearch({completeMovieInformationCallBack}: MovieApiSearchProps) {
     const [searchTerm, setSearchTerm] = useState('')
     const [possibleMovies, setPossibleMovies] = useState<Array<Movie>>([])
+    //TODO:  NodeJS is probably not the exact type I'm looking for, if this is run on the client...
+    const [pollTimeout, setPollTimeout] = useState<NodeJS.Timeout | null>(null);
 
     function handleSearchTermChange (e: ChangeEvent<HTMLInputElement>) {
         setSearchTerm(e.target.value)
     }
 
     async function updatePossibilities() {
+        // console.log('UPDATING POSSIBILITIES: A COSTLY OPERATION')
         const result = await getMoviesFromExternalAPI(searchTerm)
         setPossibleMovies(result)
     }
 
     useEffect(() => {
+        if (pollTimeout != null) {
+            clearTimeout(pollTimeout)
+        }
         if (searchTerm.trim().length > 0) {
-            updatePossibilities()
+            
+            const handle = setTimeout(updatePossibilities, TIMEOUT_DELAY_IN_MS)
+            setPollTimeout(handle);
+            // updatePossibilities()
+        } else {
+
+            // Just instantly set to no options? 
+            setPossibleMovies([])
+        }
+
+        return () => {
+            if (pollTimeout != null) {
+                clearTimeout(pollTimeout)
+            }
         }
     }, [searchTerm])
 
