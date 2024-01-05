@@ -14,7 +14,7 @@ export async function reactToMovie(movieId: number, reaction: Reaction['type']):
     return data
 }
 
-export async function getMovieReaction(movieId: number): Promise<Reaction> {
+export async function getMovieReaction(movieId: number): Promise<Reaction | null> {
     const response = await fetch(`/api/movies/${movieId}/reaction`)
     const { data } = await response.json()
     return data

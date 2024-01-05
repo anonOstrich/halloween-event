@@ -8,10 +8,14 @@ import { useEffect, useState } from "react";
 
 export default function Reaction({ movieId }: { movieId: number }) {
     const [type, setType] = useState<ReactionType['type']>()
+
     useEffect(() => {
         async function doStuff() {
             const reaction = await getMovieReaction(movieId)
-            setType(reaction.type)
+            if (reaction != null) {
+                setType(reaction.type)
+            }
+           
         }
         doStuff()
     }, [])
