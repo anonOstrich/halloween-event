@@ -50,7 +50,7 @@ model Reaction {
     user User @relation(fields: [userId], references: [id])
     
     movieId Int
-    movie Movie @relation(fields: [movieId], references: [id])
+    movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
     type ReactionType
 
