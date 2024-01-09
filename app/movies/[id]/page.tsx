@@ -1,6 +1,8 @@
 import Reaction from "@/components/Reaction"
 import { prisma } from "@/utils/db"
 import { deleteMovie } from "@/utils/server-actions"
+import { Movie } from "@prisma/client"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 
@@ -26,6 +28,7 @@ export default async function MoviePage({ params }: { params: { id: string, } })
 
     return <main className="flex flex-col justify-between max-w-2xl mx-auto">
         <DeleteMovieComponent movieId={movie.id}  />
+        <UpdateMovieComponent movie={movie}/>
         <article>
             <h2>{movie.title}</h2>
             <p>Year: {movie.year}</p>
@@ -41,7 +44,6 @@ export default async function MoviePage({ params }: { params: { id: string, } })
 async function handleDeletion(data: FormData) {
     'use server'
     const something = data.get('movie-id')
-    console.log('logging something...', something)
     // Better type check would be in order
     const movieId = Number(something?.valueOf())
     const deletedMovie = await deleteMovie(movieId);
@@ -59,5 +61,26 @@ function DeleteMovieComponent({movieId}: DeleteMovieComponentProps) {
             <input type="hidden" name="movie-id" value={movieId}/>
             <button className="text-black" type="submit">X</button>
         </form>
+    </div>
+}
+
+
+async function serverHandleClickUpdate (data: FormData) {
+    'use server'
+    console.log('handling :3')
+}
+
+
+interface UpdateMovieComponentProps {
+    movie: Movie
+}
+
+function UpdateMovieComponent({movie}: UpdateMovieComponentProps) {
+    console.log('AM I HERE?')
+    const {title, id} = movie
+
+    // Relate to the position of the delete button: maybe they should be in the same container, even?
+    return <div className="absolute top-[100px] right-0">
+        <Link href={`/movies/${id}/edit`}>Update</Link>
     </div>
 }
