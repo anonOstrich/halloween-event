@@ -42,7 +42,5 @@ export async function addNewMovie(title: string, year: number, description: stri
     })
     const {data} = await response.json();
 
-    console.log('this came from the backend after adding a new movie:')
-    console.log(JSON.stringify(data, null, 2))
     return data.message
 }
