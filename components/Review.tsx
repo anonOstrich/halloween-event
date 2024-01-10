@@ -1,5 +1,4 @@
 
-import { getMovieReaction, reactToMovie } from "@/utils/api";
 import { getUserId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import { convertScoreToNumber } from "@/utils/score-utils";
