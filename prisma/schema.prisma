@@ -16,13 +16,13 @@ model PossibleRegistrar {
 
 model User {
     id Int @id @default(autoincrement())
-      createdAt DateTime @default(now())
+    createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     clerkId String @unique
     email String @unique
     addedMovies Movie[]
 
-    reactions Reaction[]
+    reviews Review[]
 }
 
 // TODO: technical specs, availibility on different formats
@@ -37,28 +37,52 @@ model Movie {
     userId Int
     user User @relation(fields: [userId], references: [id])
 
-    reactions Reaction[]
+    reviews Review[]
 }
 
-
-model Reaction {
+// For now: review connected to movie & user, can pretty easily add different aspects to the review
+model Review {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    // Text might be optional...? 
+    reviewText String?
+
+    score Score
+
     userId Int
     user User @relation(fields: [userId], references: [id])
     
-    movieId Int
+
+    movieId Int 
     movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
-    type ReactionType
-
     @@unique([userId, movieId])
+
 }
 
-enum ReactionType {
-    POSITIVE
-    NEGATIVE
-    NEUTRAL
+// Prisma doesn't support checks at the moment, so I'll use enum for int in range 0-19. Could also be done with postgres flavor of SQL, but I prefer to keep the schema in one .prisma file
+
+enum Score {
+    ZERO
+    ONE
+    TWO
+    THREE
+    FOUR
+    FIVE
+    SIX
+    SEVEN
+    EIGHT
+    NINE
+    TEN
+    ELEVEN
+    TWELVE
+    THIRTEEN
+    FOURTEEN
+    FIFTEEN
+    SIXTEEN
+    SEVENTEEN
+    EIGHTEEN
+    NINETEEN
 }

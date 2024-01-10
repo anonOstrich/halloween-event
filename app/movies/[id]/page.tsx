@@ -1,4 +1,4 @@
-import Reaction from "@/components/Reaction"
+import Review from "@/components/Reaction"
 import { prisma } from "@/utils/db"
 import { deleteMovie } from "@/utils/server-actions"
 import { Movie } from "@prisma/client"
@@ -36,7 +36,9 @@ export default async function MoviePage({ params }: { params: { id: string, } })
             <p>Added by: {user.email}</p>
         </article>
 
-        {<Reaction movieId={movie.id} />}
+        {
+            <Review movieId={movie.id} />
+        }
     </main>
 }
 
