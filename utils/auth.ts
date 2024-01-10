@@ -15,3 +15,13 @@ export async function getUserId(){
     })
     return user.id
 }
+
+export async function isLoggedIn() {
+    const { userId } = auth()
+    const user =  await prisma.user.findUnique({
+        where: {
+            clerkId: userId!
+        }
+    })
+    return user != null
+}
