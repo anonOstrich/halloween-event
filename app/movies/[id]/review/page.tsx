@@ -44,7 +44,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
     })
 
     if (movie == null) {
-        return <h2>The movie doesn't exist :/</h2>
+        return <h2>The movie doesn&#39t exist</h2>
     }
 
     const userId = await getUserId()
