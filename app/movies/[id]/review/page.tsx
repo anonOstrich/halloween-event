@@ -2,7 +2,8 @@ import FormRow from "@/components/FormRow"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
 import { convertScoreToNumber } from "@/utils/score-utils"
-import { reviewMovie } from "@/utils/server-actions"
+import { deleteMovieReview, reviewMovie } from "@/utils/server-actions"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 
@@ -17,6 +18,15 @@ async function handleReviewSubmission(data: FormData) {
 
     const updatedReview = await reviewMovie(movieId, reviewScore, reviewText ?? null)
 
+    return redirect(`/movies/${movieId}`)
+}
+
+async function handleReviewDeletion(data: FormData) {
+    'use server'
+    const movieId = Number(data.get('movie-id'))
+
+    const deletedReview = await deleteMovieReview(movieId)
+    console.log('DELETED THE FOLLOWING MOVIE REVIEW: ', deletedReview)
     return redirect(`/movies/${movieId}`)
 
 }
@@ -62,5 +72,11 @@ export default async function ReviewPage({ params }: { params: { id: string } })
                 <FormRow type="textarea" displayValue="Review text" separateDisplayValue value={defaultText} name="movie-review-text" />
                 <button type="submit">{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
             </form>
+            {
+                possibleExistingReview == null ? (<Link href={`/movies/${movie.id}`}>Cancel</Link>) : (<form action={handleReviewDeletion}>
+                    <input type="hidden" name="movie-id" value={movie.id} />
+                    <button type="submit">Delete review
+                    </button></form>)
+            }
         </section>)
 }

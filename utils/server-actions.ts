@@ -58,3 +58,17 @@ export async function reviewMovie(id: number, score: number, text: string | null
 
     return updatedReview
 }
+
+export async function deleteMovieReview(movieId: number) {
+    const userId = await getUserId()
+
+    const deletedReview = await prisma.review.delete({
+        where: {
+            userId_movieId: {
+                movieId: movieId,
+                userId: userId
+            }
+        }
+    })
+    return deletedReview
+}
