@@ -1,4 +1,5 @@
 import Review from "@/components/Review"
+import ReviewSummary from "@/components/ReviewSummary"
 import { prisma } from "@/utils/db"
 import { deleteMovie } from "@/utils/server-actions"
 import { Movie } from "@prisma/client"
@@ -37,6 +38,7 @@ export default async function MoviePage({ params }: { params: { id: string, } })
         </article>
 
         <Review movieId={movie.id} />
+        <ReviewSummary movie={movie} />
     </main>
 }
 
