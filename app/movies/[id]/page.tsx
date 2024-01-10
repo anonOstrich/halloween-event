@@ -26,10 +26,10 @@ export default async function MoviePage({ params }: { params: { id: string, } })
 
 
 
-    return <main className="flex flex-col justify-between max-w-2xl mx-auto">
+    return <main className="flex flex-col justify-between max-w-2xl mx-auto gap-10">
         <DeleteMovieComponent movieId={movie.id} />
         <UpdateMovieComponent movie={movie} />
-        <article>
+        <article className="bg-gray-700 px-5 py-5 border-2 rounded-md flex flex-col gap-5">
             <h2>{movie.title}</h2>
             <p>Year: {movie.year}</p>
             <p>Description: {movie.description}</p>

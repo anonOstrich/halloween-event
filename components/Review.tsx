@@ -17,11 +17,17 @@ export default async function Review({ movieId }: { movieId: number }) {
     });
 
 
+    const tailwindClass = ``
+
     if (existingReview == null) {
         // TODO: Review on this site? Or give a rating?
-        return <div>
+        return <div className="border-2 border-white rounded-md py-5 px-3 bg-teal-600 flex flex-col gap-4">
             <p>You have not reviewed the movie yet</p>
-            <Link href={`/movies/${movieId}/review`}>Review?</Link>
+            <Link href={`/movies/${movieId}/review`} className="block text-center py-3 bg-black shadow-sm transition-colors rounded-sm
+            hover:bg-white hover:text-black
+            hover:shadow-lg">
+                Review?
+            </Link>
         </div>
     }
 
@@ -32,10 +38,12 @@ export default async function Review({ movieId }: { movieId: number }) {
     } = existingReview
 
     // TODO: 
-    return (<div>
+    return (<div className="border-2 border-white rounded-md py-5 px-3 bg-teal-600 flex flex-col gap-4">
         <h3>Your review:</h3>
-        {reviewText && (<p>{reviewText}</p>)}
-        <h4>{convertScoreToNumber(score)} / 19</h4>
-        <Link href={`/movies/${movieId}/review`}>Update review</Link>
+        {reviewText && (<p className="block bg-gray-300 p-4 font-sans text-md text-gray-700">{reviewText}</p>)}
+        <span>
+            Score: {convertScoreToNumber(score)} / 19</span>
+
+        <Link href={`/movies/${movieId}/review`} className="block border-2 text-center py-3 text-sm bg-teal-700 rounded-sm hover:text-teal-700 hover:bg-white hover:border-teal-700 hover:shadow-lg transition-all">Update review</Link>
     </div>)
 }
