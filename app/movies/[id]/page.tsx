@@ -1,4 +1,4 @@
-import Reaction from "@/components/Reaction"
+import Review from "@/components/Review"
 import { prisma } from "@/utils/db"
 import { deleteMovie } from "@/utils/server-actions"
 import { Movie } from "@prisma/client"
@@ -27,8 +27,8 @@ export default async function MoviePage({ params }: { params: { id: string, } })
 
 
     return <main className="flex flex-col justify-between max-w-2xl mx-auto">
-        <DeleteMovieComponent movieId={movie.id}  />
-        <UpdateMovieComponent movie={movie}/>
+        <DeleteMovieComponent movieId={movie.id} />
+        <UpdateMovieComponent movie={movie} />
         <article>
             <h2>{movie.title}</h2>
             <p>Year: {movie.year}</p>
@@ -36,7 +36,7 @@ export default async function MoviePage({ params }: { params: { id: string, } })
             <p>Added by: {user.email}</p>
         </article>
 
-        {<Reaction movieId={movie.id} />}
+        <Review movieId={movie.id} />
     </main>
 }
 
@@ -55,17 +55,17 @@ interface DeleteMovieComponentProps {
 }
 
 // This needs to consider cursor on the whole
-function DeleteMovieComponent({movieId}: DeleteMovieComponentProps) {
+function DeleteMovieComponent({ movieId }: DeleteMovieComponentProps) {
     return <div className="absolute top-0 right-0 mx-5 my-5 bg-red-200 rounded-full min-w-[50px] min-h-[50px] flex justify-center align-middle">
         <form action={handleDeletion} className="flex justify-center align-middle">
-            <input type="hidden" name="movie-id" value={movieId}/>
+            <input type="hidden" name="movie-id" value={movieId} />
             <button className="text-black" type="submit">X</button>
         </form>
     </div>
 }
 
 
-async function serverHandleClickUpdate (data: FormData) {
+async function serverHandleClickUpdate(data: FormData) {
     'use server'
     console.log('handling :3')
 }
@@ -75,9 +75,9 @@ interface UpdateMovieComponentProps {
     movie: Movie
 }
 
-function UpdateMovieComponent({movie}: UpdateMovieComponentProps) {
+function UpdateMovieComponent({ movie }: UpdateMovieComponentProps) {
     console.log('AM I HERE?')
-    const {title, id} = movie
+    const { title, id } = movie
 
     // Relate to the position of the delete button: maybe they should be in the same container, even?
     return <div className="absolute top-[100px] right-0">
