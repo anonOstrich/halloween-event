@@ -1,6 +1,10 @@
 import { authMiddleware } from "@clerk/nextjs";
 
-export default authMiddleware({
+
+const runningLocally = process.env['LOCAL_ENVIRONMENT']
+const disableAuth = process.env['DISABLE_AUTH']
+
+let mw = authMiddleware({
     publicRoutes: [
         '/',
         '/newsletter',
@@ -9,6 +13,16 @@ export default authMiddleware({
         '/api/secret'
     ]
 })
+
+
+if (runningLocally === 'true' && disableAuth === 'true') {
+    mw = authMiddleware({
+        publicRoutes: (req) => true
+    })
+
+}
+
+export default mw
 
 export const config = {
     matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
