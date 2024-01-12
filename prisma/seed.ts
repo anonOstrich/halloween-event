@@ -85,6 +85,7 @@ async function main(){
                 description: 'Looking for little joys in life. Some classics of the genre are...',
                 theme: 'Happy',
                 title: 'Joie de vivre',
+                plannedDate: new Date(),
             }
         })
 

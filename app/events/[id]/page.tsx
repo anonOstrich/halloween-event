@@ -1,11 +1,20 @@
+import { prisma } from "@/utils/db"
 
 
 export default async function EventPage({params}: {params: {id: string}}) {
     const { id } = params
 
+    const event = await prisma.event.findFirst({
+        where: {
+            id: Number(id)
+        }
+    })
+
+    console.log(`event ${id}:`,  event)
+
     return <main>
         <h1>Event Page</h1>
-        <p>You are viewing the page for the following event: {id}</p>
+        <p>You are viewing the page for the following event: {event?.title}</p>
         <p>Event created by: ???</p>
 
         <div>

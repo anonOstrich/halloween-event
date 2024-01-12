@@ -92,6 +92,7 @@ model Event {
     title String
     description String
     theme String
+    plannedDate DateTime @db.Date()
     // "pakotus"
     movieClubEvent Boolean @default(false)
 
