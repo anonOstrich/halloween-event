@@ -1,4 +1,8 @@
+import VoteWidget from "@/components/VoteWidget"
+import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
+import { Event, Movie, MovieEvent, Vote } from "@prisma/client"
+import Link from "next/link"
 
 
 export default async function EventPage({params}: {params: {id: string}}) {
@@ -10,30 +14,90 @@ export default async function EventPage({params}: {params: {id: string}}) {
         }
     })
 
-    console.log(`event ${id}:`,  event)
+    if (event == null) {
+        return <h4 className="text-red-700">No event with such id exists</h4>
+    }
 
-    return <main>
+    const isPakotus = event.movieClubEvent
+
+
+    return <main className="flex flex-col justify-center items-center gap-3">
         <h1>Event Page</h1>
-        <p>You are viewing the page for the following event: {event?.title}</p>
-        <p>Event created by: ???</p>
-
+        <h2>{event.title} {isPakotus && (<span className="uppercase text-amber-200">pakotus</span>)}</h2>
+        <h3>Theme: ${event.theme}</h3>
         <div>
-            <h2>Details:</h2>
-            <ul>
-                <li>Location: ???</li>
-                <li>Date: ??? (and: should there be a vote on this as well)</li>
-                <li>Other description??</li>
-                <li>Theme?</li>
-            </ul>
+            <h4 className="text-center">Description</h4>
+            <p>
+                { event.description }
+            </p>
         </div>
 
-        <div>
-            <h2>The movies you can vote for</h2>
-            <ul>
-                <li>Test</li>
-                <li>Alaston ase</li>
-            </ul>
-        </div>
+        <EventMovies eventId={event.id} />
+
     </main>
 
 }
+
+async function EventMovies({eventId}: {eventId: number}) {
+    const voteOptions = await prisma.movieEvent.findMany({
+        where: {
+            eventId: eventId
+        },
+        select: {
+            id: true,
+            movie: true,
+            votes: true
+        }
+    })
+    return        (<div>
+    <h2>The movies you can vote for</h2>
+    <ul>
+        {
+            voteOptions.map(voteOption => (<li key={voteOption.id}>
+                <VoteOption votes={voteOption.votes} movie={voteOption.movie}/>
+            </li>))
+        }
+    </ul>
+</div>)
+}
+
+interface VoteOptionProps {
+    votes: Array<Vote>,
+    movie: Movie
+}
+
+async function VoteOption({votes, movie}: VoteOptionProps) {
+
+    const {
+        posVotes,
+        neutralVotes,
+        negVotes
+    } = votes.map(v => v.voteType).reduce((acc, el) => {
+        switch (el) {
+            case "POSITIVE":
+                acc.posVotes++
+                break
+            case "NEUTRAL":
+                acc.neutralVotes++
+                break
+            case "NEGATIVE":
+                acc.negVotes++
+                break
+        }
+        return acc
+    }, {posVotes: 0, neutralVotes: 0, negVotes:0})
+
+    const userId = await getUserId()
+
+    const givenVote = votes.find(v => v.userId === userId)
+    
+
+    return <div className="border-2 border-white p-5">
+        <h6><Link href={`/movies/${movie.id}`} className="underline">{movie.title}</Link></h6>
+        <div>
+            <VoteWidget label="Positive" nofVotes={posVotes} matchesOwnVote={givenVote?.voteType === 'POSITIVE' }/>
+            <VoteWidget label="Neutral" nofVotes={neutralVotes} matchesOwnVote={givenVote?.voteType === 'NEUTRAL' }/>
+            <VoteWidget label="Negative" nofVotes={negVotes} matchesOwnVote={givenVote?.voteType === 'NEGATIVE' }/></div>
+    </div>
+}
+

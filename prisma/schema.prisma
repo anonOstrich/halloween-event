@@ -84,6 +84,7 @@ model MovieEvent {
 }
 
 
+// Should I also store the id of the user creator?
 model Event {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
