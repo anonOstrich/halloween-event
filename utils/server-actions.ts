@@ -72,3 +72,17 @@ export async function deleteMovieReview(movieId: number) {
     })
     return deletedReview
 }
+
+export async function createEvent(title: string, description: string, plannedDate: Date, theme: string ) {
+
+    const createdEvent = await prisma.event.create({
+        data: {
+            title,
+            description,
+            plannedDate,
+            theme,
+        }
+    })
+
+    return createdEvent
+}
