@@ -148,4 +148,5 @@ enum VoteType {
     POSITIVE
     NEUTRAL
     NEGATIVE
+    NONVOTE
 }

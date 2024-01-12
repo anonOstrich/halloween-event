@@ -1,4 +1,5 @@
 import VoteWidget from "@/components/VoteWidget"
+import VotingWidget from "@/components/VotingWidget"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
 import { Event, Movie, MovieEvent, Vote } from "@prisma/client"
@@ -24,7 +25,7 @@ export default async function EventPage({params}: {params: {id: string}}) {
     return <main className="flex flex-col justify-center items-center gap-3">
         <h1>Event Page</h1>
         <h2>{event.title} {isPakotus && (<span className="uppercase text-amber-200">pakotus</span>)}</h2>
-        <h3>Theme: ${event.theme}</h3>
+        <h3>Theme: {event.theme}</h3>
         <div>
             <h4 className="text-center">Description</h4>
             <p>
@@ -54,7 +55,7 @@ async function EventMovies({eventId}: {eventId: number}) {
     <ul>
         {
             voteOptions.map(voteOption => (<li key={voteOption.id}>
-                <VoteOption votes={voteOption.votes} movie={voteOption.movie}/>
+                <VoteOption movieEventId={eventId} votes={voteOption.votes} movie={voteOption.movie}/>
             </li>))
         }
     </ul>
@@ -63,10 +64,13 @@ async function EventMovies({eventId}: {eventId: number}) {
 
 interface VoteOptionProps {
     votes: Array<Vote>,
-    movie: Movie
+    movie: Movie,
+    movieEventId: number
 }
 
-async function VoteOption({votes, movie}: VoteOptionProps) {
+
+
+async function VoteOption({votes, movie, movieEventId}: VoteOptionProps) {
 
     const {
         posVotes,
@@ -94,10 +98,14 @@ async function VoteOption({votes, movie}: VoteOptionProps) {
 
     return <div className="border-2 border-white p-5">
         <h6><Link href={`/movies/${movie.id}`} className="underline">{movie.title}</Link></h6>
-        <div>
-            <VoteWidget label="Positive" nofVotes={posVotes} matchesOwnVote={givenVote?.voteType === 'POSITIVE' }/>
-            <VoteWidget label="Neutral" nofVotes={neutralVotes} matchesOwnVote={givenVote?.voteType === 'NEUTRAL' }/>
-            <VoteWidget label="Negative" nofVotes={negVotes} matchesOwnVote={givenVote?.voteType === 'NEGATIVE' }/></div>
+        {
+            <VotingWidget
+            ownVote={givenVote?.voteType ?? null}
+            votes={{posVotes, neutralVotes, negVotes}}
+            movieEventId={movieEventId}
+            />
+        }
+        
     </div>
 }
 
