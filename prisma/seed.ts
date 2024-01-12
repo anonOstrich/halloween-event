@@ -4,6 +4,14 @@ import { PrismaClient } from "@prisma/client";
 //Resetting the auto increment values wasn't straightforward, since they're not created automatically as identity columns in postgres
 
 async function clearExistingValues(prisma: PrismaClient) {
+
+    await prisma.vote.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Vote"', 'id'), 1)`;
+    await prisma.movieEvent.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."MovieEvent"', 'id'), 1)`;
+
+
+
     await prisma.review.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Review"', 'id'), 1)`;
     await prisma.movie.deleteMany({})
@@ -11,6 +19,13 @@ async function clearExistingValues(prisma: PrismaClient) {
 
     await prisma.user.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."User"', 'id'), 1)`;
+
+    await prisma.event.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Event"', 'id'), 1)`;
+
+
+
+
 }
 
 
@@ -60,6 +75,36 @@ async function main(){
                     userId: 2
                 }
             ]
+        })
+
+
+
+
+        const event = await prisma.event.create({
+            data: {
+                description: 'Looking for little joys in life. Some classics of the genre are...',
+                theme: 'Happy',
+                title: 'Joie de vivre',
+                plannedDate: new Date(),
+            }
+        })
+
+        const movieEvent = await prisma.movieEvent.create({
+            data: {
+                movieId: 2,
+                eventId: event.id
+            }
+        })
+
+
+        // TODO: why are the relations not mandatory? 
+        const vote = await prisma.vote.create({
+            data: {
+                voteType: 'POSITIVE',
+                userId: 4,
+                movieEventId: movieEvent.id,
+
+            }
         })
         
         console.log('seed script executed!')

@@ -23,6 +23,8 @@ model User {
     addedMovies Movie[]
 
     reviews Review[]
+
+    votes Vote[]
 }
 
 // TODO: technical specs, availibility on different formats
@@ -36,6 +38,8 @@ model Movie {
 
     userId Int
     user User @relation(fields: [userId], references: [id])
+
+    movieEvent MovieEvent[]
 
     reviews Review[]
 }
@@ -62,6 +66,59 @@ model Review {
 
 }
 
+model MovieEvent {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    movieId Int
+    movie Movie @relation(fields: [movieId], references: [id])
+
+    eventId Int
+    event Event @relation(fields: [eventId], references: [id])
+
+    votes Vote[]
+
+    @@unique([movieId, eventId])
+
+}
+
+
+// Should I also store the id of the user creator?
+model Event {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    title String
+    description String
+    theme String
+    plannedDate DateTime @db.Date()
+    // "pakotus"
+    movieClubEvent Boolean @default(false)
+
+    // At first: just one movie
+    // Check: one movie can only be added once
+    movieEvent MovieEvent[]
+
+}
+
+model Vote {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+
+    movieEventId Int
+    event MovieEvent @relation(fields: [movieEventId], references: [id])
+
+    voteType VoteType
+
+    @@unique([movieEventId, userId])
+}
+
 // Prisma doesn't support checks at the moment, so I'll use enum for int in range 0-19. Could also be done with postgres flavor of SQL, but I prefer to keep the schema in one .prisma file
 
 enum Score {
@@ -85,4 +142,11 @@ enum Score {
     SEVENTEEN
     EIGHTEEN
     NINETEEN
+}
+
+enum VoteType {
+    POSITIVE
+    NEUTRAL
+    NEGATIVE
+    NONVOTE
 }

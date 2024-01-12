@@ -1,3 +1,4 @@
+import { Vote, VoteType } from "@prisma/client";
 import { Movie } from "./types"
 
 export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Array<Movie>> {
@@ -23,4 +24,22 @@ export async function addNewMovie(title: string, year: number, description: stri
     const {data} = await response.json();
 
     return data.message
+}
+
+
+// Really this is toggling!
+export async function voteForEventMovie(movieEventId: number, voteType: VoteType): Promise<Vote> {
+
+    const response = await fetch(`/api/events/${movieEventId}/vote`, {
+        method: 'POST',
+        body: JSON.stringify({
+            voteType
+        })
+    })
+    const {
+        data 
+    } = await response.json()
+
+    const { vote } = data
+    return vote
 }

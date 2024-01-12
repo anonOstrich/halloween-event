@@ -11,7 +11,7 @@
     "prisma-build": "prisma generate && prisma db push",
     "start": "next start",
     "lint": "next lint",
-    "local-test": "docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres"
+    "local-test": "docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 54320:5432 postgres"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.25.3",
