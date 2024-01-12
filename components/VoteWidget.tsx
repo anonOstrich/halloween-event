@@ -43,12 +43,12 @@ function clickHandler (){
     const buttonsEl = (<><button className={`border-2 border-white px-3  disabled:bg-gray-900 ${matchingVote ? 'bg-green-600' : 'bg-gray-600'}`} onClick={clickHandler}>+</button>
     </>)
 
-    return (<>
-    <span>{label}: {nofVotes}</span>
+    return (<div className="flex flex-col items-center">
+    <span className="block">{label}: {nofVotes}</span>
     <div>
         {
             isLoading ? <span>Loading...</span> : buttonsEl
         }
         
-    </div> <br /></>)
+    </div> <br /></div>)
 }
