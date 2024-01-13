@@ -2,7 +2,6 @@ import ExperimentalThumbsUpWidget from "@/components/ExperimentalThumbsUpWidget"
 import FormRow from "@/components/FormRow"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { convertScoreToNumber } from "@/utils/score-utils"
 import { deleteMovieReview, reviewMovie } from "@/utils/server-actions"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -56,8 +55,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
         }
     })
 
-    console.log('EXISTING REVIEW: ', possibleExistingReview)
-    const defaultScore = possibleExistingReview == null ? 10 : convertScoreToNumber(possibleExistingReview.score)
+    const defaultScore = possibleExistingReview == null ? 10 :possibleExistingReview.score
 
 
 

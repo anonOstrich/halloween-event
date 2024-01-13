@@ -57,7 +57,10 @@ model Review {
     // Text might be optional...? 
     reviewText String?
 
-    score Score
+    // Step one: allow any integer
+    score Int
+    // This is not needed except for setting up the relation in prisma. The id can be used as the score 
+    score_ ReviewScoreValue @relation(fields: [score], references: [id])
 
     userId Int
     user User @relation(fields: [userId], references: [id])
@@ -68,6 +71,14 @@ model Review {
 
     @@unique([userId, movieId])
 
+}
+
+// This is a great(?) hack to enforce a check condition while creating the whole schema
+// with just the .prisma file
+model ReviewScoreValue {
+    id Int @id
+
+    review Review[]
 }
 
 model MovieEvent {
@@ -127,30 +138,7 @@ model Vote {
     @@unique([movieEventId, userId])
 }
 
-// Prisma doesn't support checks at the moment, so I'll use enum for int in range 0-19. Could also be done with postgres flavor of SQL, but I prefer to keep the schema in one .prisma file
 
-enum Score {
-    ZERO
-    ONE
-    TWO
-    THREE
-    FOUR
-    FIVE
-    SIX
-    SEVEN
-    EIGHT
-    NINE
-    TEN
-    ELEVEN
-    TWELVE
-    THIRTEEN
-    FOURTEEN
-    FIFTEEN
-    SIXTEEN
-    SEVENTEEN
-    EIGHTEEN
-    NINETEEN
-}
 
 enum VoteType {
     POSITIVE

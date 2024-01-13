@@ -6,5 +6,5 @@ export default async function ProfileLink() {
 
     const userId = await getUserId()
 
-    return <Link href={`profile/${userId}`}>profile</Link>
+    return <Link href={`/profile/${userId}`}>profile</Link>
 }

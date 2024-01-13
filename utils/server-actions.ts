@@ -1,6 +1,5 @@
 import { getUserId } from "./auth"
 import { prisma } from "./db"
-import { convertNumberToScore } from "./score-utils"
 
 // Utilities called from server actions. An alternative to calling the API from client
 export async function deleteMovie(id: number) {
@@ -33,7 +32,11 @@ export async function updateMovie(id: number, title: string, year: number, descr
 
 export async function reviewMovie(id: number, score: number, text: string | null) {
     const userId = await getUserId()
-    const convertedScore = convertNumberToScore(score)
+
+    //TODO: Don't just throw...
+    if (score < 0 || score > 19) { 
+        throw new Error('Score must be between 0 and 19')
+    }
     
     const updatedReview = await prisma.review.upsert({
         where: {
@@ -43,13 +46,13 @@ export async function reviewMovie(id: number, score: number, text: string | null
             }
         },
         create: {
-            score: convertedScore,
+            score: score,
             reviewText: text,
             userId: userId,
             movieId: id
         }, 
         update: {
-            score: convertedScore,
+            score: score,
             reviewText: text
         }
 
@@ -93,8 +96,6 @@ export async function associateMoviesWithEvent(eventId: number, movieIds: Array<
     }))
     .map(d => d.movieId)
 
-    console.log('alreadyAssociatedIds', alreadyAssociatedIds)
-
     const newMovieIdsToAssociate = movieIds.filter((movieId) => !alreadyAssociatedIds.includes(movieId))
 
     const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
@@ -103,7 +104,6 @@ export async function associateMoviesWithEvent(eventId: number, movieIds: Array<
          userId: userId
     }))
 
-    console.log(dataToInsert)
 
     const result = await prisma.movieEvent.createMany({
         data: dataToInsert,
