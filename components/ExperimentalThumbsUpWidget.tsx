@@ -1,4 +1,6 @@
+'use client'
 
+import { useState } from "react"
 
 
 interface ExperimentalThumbsUpWidgetProps {
@@ -12,43 +14,42 @@ interface ExperimentalThumbsUpWidgetProps {
 }
 export default function ExperimentalThumbsUpWidget(props: ExperimentalThumbsUpWidgetProps) {
 
+    // These will probably not change
     const { min, max } = props.config
 
     const { score } = props.input
 
+    const [rangeValue, setRangeValue] = useState(score)
+
+    // Should I pick from a gradient?
+    const color = rangeValue < 8 ? "red" : rangeValue < 16 ? "yellow" : "green"
 
 
-    // Dynamically adjust: 1) the background color and 2) the rotaiton of the thumb
 
-    const color = score < 8 ? "red" : score < 16 ? "yellow" : "green"
-
-    console.log('score: ', score)
-
-
-    const rotationFr = (score / (max - min)) * 180
+    const rotationFr = (rangeValue / (max - min)) * 180
     const rotationInDegrees =  Math.ceil(180 - rotationFr)
-   
-    const rotatePart = `rotate-${rotationInDegrees}`
-    const emojiTailwindClass = 'block absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]' + rotatePart
-    console.log('rotationFr: ', rotationFr)
-    console.log('rotationInDegrees: ', rotationInDegrees)
-    // TODO: check the rotation point to be at the center of the emoji!
-    const nameForClass = `bg-${color}-700 p-7 rounded-full relative`
 
-
+    // Style object, because run-time classes not doable with tailwind
     const rotationStyle = {
         transform: `translateX(-50%) translateY(-50%) rotate(${rotationInDegrees}deg) `,
         transformOrigin: 'center center',
         top: '50%',
         left: '50%'
     }
-    console.log('nameForClass: ', nameForClass)
     return (
         <div className="width-full flex justify-stretch items-center min-width-[500px] gap-5">
-            <label htmlFor="rating-score">Thumbs up slider</label>
-            <input name="rating-score" id="rating-score" type="range" min={min} max={max} />
-            <div className={nameForClass}>
+            <label htmlFor="movie-score">Thumbs up slider</label>
+            <div className="flex flex-col items-center gap-3">
+
+            <div className="rounded-full relative p-7" style={{
+                backgroundColor: color
+            }}>
                 <span className="block absolute" style={rotationStyle}>👍</span>
+            </div>
+            <input name="movie-score" id="movie-score" type="range" min={min} max={max} value={rangeValue} onChange={(e) => {setRangeValue(Number(e.target.value))}} />
+            <div>
+                <span>{rangeValue} ({min}-{max})</span>
+            </div>
             </div>
         </div>
     )
