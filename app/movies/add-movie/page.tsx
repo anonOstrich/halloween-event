@@ -30,9 +30,6 @@ export default function AddMoviePage() {
         setTitle('')
         setYear(2000)
         setDescription('')
-        // Tests on how to use toasting
-        //toast("Successfully added")
-        //toast.error('wrong?')
         toast.success('Successfully added')
         something.push('/movies')
         // TODO: redirect to the movie page? Maybe after a success message?

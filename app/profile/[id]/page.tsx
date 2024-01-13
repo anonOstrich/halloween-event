@@ -1,6 +1,5 @@
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { reviewMovie } from "@/utils/server-actions"
 import { Movie, Review } from "@prisma/client"
 
 
@@ -31,29 +30,68 @@ export default async function ProfilePage() {
         return <main><h2>No reviews yet!</h2></main>
     }
 
-    const numericalScores = reviews.map(r => r.score)
-
-    const average = numericalScores.reduce((acc, el) => acc + el, 0) / reviews.length
-
-    const max = numericalScores.reduce((acc, el) => el >= acc ? el : acc, -10)
-    const min = numericalScores.reduce((acc, el) => el < acc ? el : acc, 100)
 
 
-    // TODO: Simplify database queries. Currently: three separate ones during the course of rendering
-    const maxReview = reviews.find(r => r.score == max)!
-    const maxMovie = maxReview.movie.title
-    const minReview = reviews.find(r => r.score == min)!
-    const minMovie = minReview.movie.title
+
+    // At the moment this would be better done on client side (if I'm going to fetch and present ALL the reviews from the user on a single page)
+    // For future, definitely worth the effort
+    const aggregateStats = await prisma.review.aggregate({
+        where: {
+            userId: user.id
+        },
+        _avg: {
+            score: true
+        },
+        _min: {
+            score: true
+        },
+        _max: {
+            score: true,
+        },
+        _count: {
+            score: true
+        }
+    })
+
+    const {
+        _avg,
+        _min,
+        _max,
+        _count
+    } = aggregateStats
+
+    const minMovie = await prisma.review.findFirst({
+        where: {
+            userId: user.id,
+            score: _min.score!
+        },
+        include: {
+            movie: true
+        }}
+    )
+
+    const maxMovie = await prisma.review.findFirst({
+        where: {
+            userId: user.id,
+            score: _max.score!
+        },
+        include: {
+            movie: true
+        }}
+    )
+
+
+
 
     return <main className="flex flex-col gap-5 px-5">
         <h3>Here is your profile {user.email}</h3>
         <div className="border-2 border-white px-5 py-2">
             <span>Your stats:</span>
             <ul>
-                <li>Reviewed {numericalScores.length} movies</li>
-                <li>Average rating (/19): {average}</li>
-                <li>Highest rating: {max} (for {maxMovie})</li>
-                <li>Lowest rating: {min} (for {minMovie})</li>
+                <li>Reviewed {_count.score} movies</li>
+                <li>Average rating (/19): {_avg.score}</li>
+                <li>Highest rating: {_max.score} (for {minMovie?.movie.title})</li>
+                <li>Lowest rating: {_min.score} (for {maxMovie?.movie.title})</li>
             </ul>
         </div>
 

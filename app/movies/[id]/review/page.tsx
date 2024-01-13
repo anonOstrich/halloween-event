@@ -55,7 +55,6 @@ export default async function ReviewPage({ params }: { params: { id: string } })
         }
     })
 
-    console.log('EXISTING REVIEW: ', possibleExistingReview)
     const defaultScore = possibleExistingReview == null ? 10 :possibleExistingReview.score
 
 

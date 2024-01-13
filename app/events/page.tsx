@@ -25,8 +25,7 @@ export default async function EventsPage() {
 
 async function EventListItem({event} : {event: Event}){
 
-    // TODO: Remove. For some reason, the database doesn't update properly
-    const date = event.plannedDate //?? new Date()
+    const date = event.plannedDate
     console.log('DATE: ', date)
 
 
