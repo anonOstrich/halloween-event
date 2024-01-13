@@ -1,7 +1,6 @@
 
 import { getUserId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
-import { convertScoreToNumber } from "@/utils/score-utils";
 import { Review as ReviewType } from "@prisma/client";
 import Link from "next/link";
 
@@ -42,7 +41,7 @@ export default async function Review({ movieId }: { movieId: number }) {
         <h3>Your review:</h3>
         {reviewText && (<p className="block bg-gray-300 p-4 font-sans text-md text-gray-700">{reviewText}</p>)}
         <span>
-            Score: {convertScoreToNumber(score)} / 19</span>
+            Score: {score} / 19</span>
 
         <Link href={`/movies/${movieId}/review`} className="block border-2 text-center py-3 text-sm bg-teal-700 rounded-sm hover:text-teal-700 hover:bg-white hover:border-teal-700 hover:shadow-lg transition-all">Update review</Link>
     </div>)

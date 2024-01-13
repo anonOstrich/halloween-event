@@ -1,5 +1,4 @@
 import { prisma } from "@/utils/db";
-import { convertScoreToNumber } from "@/utils/score-utils";
 import { Movie } from "@prisma/client";
 import Link from "next/link";
 
@@ -11,6 +10,7 @@ interface FormattedReview {
     reviewer: string
 }
 
+//TODO: This can be fixed with the changed datatype now!
 // This sucks: apparrently prisma doesn't allow for using enums as integers as I'd anticipated
 // Options: A) run function in DB when adding results, store in own columb
 // B) convert in database with each query
@@ -50,7 +50,7 @@ export default async function ReviewSummary(props: { movie: Movie }) {
         // OR: fix this for the client
         const createdDate = review.createdAt.toLocaleString()
         const updatedDate = review.updatedAt.toLocaleString()
-        const score = convertScoreToNumber(review.score)
+        const score = review.score
         const text = review.reviewText
         const reviewer = review.user.email
 
