@@ -5,6 +5,14 @@ import { PrismaClient } from "@prisma/client";
 
 async function clearExistingValues(prisma: PrismaClient) {
 
+    await prisma.event.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Event"', 'id'), 1)`;
+
+    await prisma.user.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."User"', 'id'), 1)`;
+
+
+
     await prisma.vote.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Vote"', 'id'), 1)`;
     await prisma.movieEvent.deleteMany({})
@@ -17,11 +25,9 @@ async function clearExistingValues(prisma: PrismaClient) {
     await prisma.movie.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Movie"', 'id'), 1)`;
 
-    await prisma.user.deleteMany({})
-    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."User"', 'id'), 1)`;
 
-    await prisma.event.deleteMany({})
-    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Event"', 'id'), 1)`;
+
+
 
 
 
@@ -86,13 +92,15 @@ async function main(){
                 theme: 'Happy',
                 title: 'Joie de vivre',
                 plannedDate: new Date(),
+                userId: 3
             }
         })
 
         const movieEvent = await prisma.movieEvent.create({
             data: {
                 movieId: 2,
-                eventId: event.id
+                eventId: event.id, 
+                userId: 3
             }
         })
 

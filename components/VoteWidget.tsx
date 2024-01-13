@@ -24,6 +24,7 @@ export default function VoteWidget({movieEventId, label, nofVotes, matchesOwnVot
         setIsLoading(true)
         try {
             const updatedVote = await voteForEventMovie(movieEventId, voteType)
+            console.log('updatedVote: ', updatedVote)
             updateVoteCount(updatedVote.voteType === 'NONVOTE' ? 'NONVOTE' : voteType
             , updatedVote.voteType !== 'NONVOTE')
         } catch (e) {

@@ -72,3 +72,45 @@ export async function deleteMovieReview(movieId: number) {
     })
     return deletedReview
 }
+
+export async function associateMoviesWithEvent(eventId: number, movieIds: Array<number>) {
+    if (movieIds.length == 0) {
+        return 0
+    }
+
+    const userId = await getUserId()
+
+    const alreadyAssociatedIds = (await prisma.movieEvent.findMany({
+        where: {
+            eventId: eventId,
+            movieId: {
+                in: movieIds
+            }
+        },
+        select: {
+            movieId: true
+        }
+    }))
+    .map(d => d.movieId)
+
+    console.log('alreadyAssociatedIds', alreadyAssociatedIds)
+
+    const newMovieIdsToAssociate = movieIds.filter((movieId) => !alreadyAssociatedIds.includes(movieId))
+
+    const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
+        eventId: eventId,
+        movieId: movieId,
+         userId: userId
+    }))
+
+    console.log(dataToInsert)
+
+    const result = await prisma.movieEvent.createMany({
+        data: dataToInsert,
+        // Skips: only in the new data, or also for the database? Experiment
+        skipDuplicates: true
+    })
+
+
+    return result.count
+}
