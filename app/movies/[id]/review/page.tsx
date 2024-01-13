@@ -1,3 +1,4 @@
+import ExperimentalThumbsUpWidget from "@/components/ExperimentalThumbsUpWidget"
 import FormRow from "@/components/FormRow"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
@@ -70,6 +71,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
 
                 <FormRow type="number" displayValue="Score (0-19)" separateDisplayValue value={defaultScore} name="movie-score" />
                 <FormRow type="textarea" displayValue="Review text" separateDisplayValue value={defaultText} name="movie-review-text" />
+                <ExperimentalThumbsUpWidget config={{min: 0, max: 19}} input={{score: defaultScore}} />
                 <button type="submit">{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
             </form>
             {
