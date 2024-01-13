@@ -14,17 +14,12 @@ interface ExperimentalThumbsUpWidgetProps {
 }
 export default function ExperimentalThumbsUpWidget(props: ExperimentalThumbsUpWidgetProps) {
 
-    // These will probably not change
+    // These will probably not change in reality
     const { min, max } = props.config
 
     const { score } = props.input
 
     const [rangeValue, setRangeValue] = useState(score)
-
-    // Should I pick from a gradient?
-    const color = rangeValue < 8 ? "red" : rangeValue < 16 ? "yellow" : "green"
-
-
 
     const rotationFr = (rangeValue / (max - min)) * 180
     const rotationInDegrees =  Math.ceil(180 - rotationFr)
@@ -34,15 +29,19 @@ export default function ExperimentalThumbsUpWidget(props: ExperimentalThumbsUpWi
         transform: `translateX(-50%) translateY(-50%) rotate(${rotationInDegrees}deg) `,
         transformOrigin: 'center center',
         top: '50%',
-        left: '50%'
+        left: '50%',
     }
+
+    const greenPercentage = rangeValue / max
+    const redPercentage = 1 - greenPercentage
     return (
         <div className="width-full flex justify-stretch items-center min-width-[500px] gap-5">
             <label htmlFor="movie-score">Thumbs up slider</label>
             <div className="flex flex-col items-center gap-3">
 
             <div className="rounded-full relative p-7" style={{
-                backgroundColor: color
+
+                backgroundColor: `color-mix(in hsl shorter hue, red ${redPercentage * 100}%, green)`
             }}>
                 <span className="block absolute" style={rotationStyle}>👍</span>
             </div>
