@@ -8,7 +8,7 @@ export default function Home() {
       </p>
 
       <p>
-        The page is still very much under construction. There is also a demo version, or you can try out locally with your own database by following the guidance in the <a href="/https://github.com/anonOstrich/halloween-event" className='text-blue-400 text-lg underline hover:text-blue-700'>GitHub repo</a>.
+        The page is still very much under construction. There is also a demo version, or you can try out locally with your own database by following the guidance in the <a href="/https://github.com/anonOstrich/movie-club" className='text-blue-400 text-lg underline hover:text-blue-700'>GitHub repo</a>.
       </p>
     </main>
   )
