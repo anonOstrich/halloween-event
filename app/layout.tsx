@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Halloween Event',
-  description: 'Some stuff',
+  title: 'Movie Club',
+  description: 'Site for facilitating movie watching events',
 }
 
 export default function RootLayout({
