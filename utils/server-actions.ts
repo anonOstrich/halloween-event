@@ -78,6 +78,7 @@ export async function associateMoviesWithEvent(eventId: number, movieIds: Array<
         return 0
     }
 
+    const userId = await getUserId()
 
     const alreadyAssociatedIds = (await prisma.movieEvent.findMany({
         where: {
@@ -98,7 +99,8 @@ export async function associateMoviesWithEvent(eventId: number, movieIds: Array<
 
     const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
         eventId: eventId,
-        movieId: movieId
+        movieId: movieId,
+         userId: userId
     }))
 
     console.log(dataToInsert)

@@ -25,6 +25,10 @@ model User {
     reviews Review[]
 
     votes Vote[]
+
+    movieEvents MovieEvent[]
+
+    events Event[]
 }
 
 // TODO: technical specs, availibility on different formats
@@ -71,6 +75,9 @@ model MovieEvent {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+
     movieId Int
     movie Movie @relation(fields: [movieId], references: [id])
 
@@ -97,9 +104,10 @@ model Event {
     // "pakotus"
     movieClubEvent Boolean @default(false)
 
-    // At first: just one movie
-    // Check: one movie can only be added once
     movieEvent MovieEvent[]
+
+    userId Int
+    user User @relation(fields: [userId], references: [id])
 
 }
 
