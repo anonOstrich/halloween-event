@@ -3,7 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
-import { ToastContainer  } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -25,7 +25,9 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <NavBar />
-          {children}
+          <main className='max-w-4xl m-auto mt-4'>
+            {children}
+          </main>
           <ToastContainer pauseOnHover={false} theme='dark' />
         </body>
 

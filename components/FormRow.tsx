@@ -7,7 +7,7 @@
 interface BaseProps {
     separateDisplayValue: boolean,
     name: string,
-    type: 'text' | 'number' | 'textarea',
+    type: 'text' | 'number' | 'textarea' | 'date',
     value: string | number
 }
 
@@ -31,7 +31,7 @@ export default function FormRow(props: FormRowProps) {
         <textarea defaultValue={props.value} id={props.name} name={props.name} />
         : <input type={props.type} defaultValue={props.value} name={props.name} id={props.name} />;
 
-    return <div>
+    return <div className="w-full grid grid-cols-1 md:grid-cols-[200px_1fr]">
         <label htmlFor={props.name}>{label}</label>
         {inputElement}
     </div>
