@@ -8,7 +8,13 @@ export async function GET(req: NextRequest){
     const url = new URL(req.url!)
     const searchTerm = url.searchParams.get('searchTerm')
     if (searchTerm == null || searchTerm.trim().length == 0) {
-        return []
+        return   Response.json({
+            data: {
+                movies: []
+            },
+        }, {
+            status: 200,
+        })
     }
     
 
