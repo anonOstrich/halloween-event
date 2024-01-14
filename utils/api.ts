@@ -1,5 +1,6 @@
 import { Vote, VoteType } from "@prisma/client";
 import { Movie } from "./types"
+import { getUserId } from "./auth";
 
 export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Array<Movie>> {
     const response = await fetch(`/api/movies/search`, {
@@ -42,4 +43,36 @@ export async function voteForEventMovie(movieEventId: number, voteType: VoteType
 
     const { vote } = data
     return vote
+}
+
+export async function searchForMovieFromDatabase(searchTerm: string): Promise<Movie[]> {
+    if (searchTerm.length == 0) {
+        return []
+    } 
+    const response = await fetch(`/api/movies/search-db?searchTerm=${encodeURIComponent(searchTerm)}`)
+    const {data} = await response.json();
+    const { movies } = data
+    return movies
+}
+
+export async function addMoviesToEventClient(eventId: number, movieIds: Array<number>) {
+
+
+    if (movieIds.length == 0) {
+        return 0
+    }
+
+
+    const result = await fetch(`/api/events/${eventId}/addMovie`, {
+        method: 'POST',
+        body: JSON.stringify({
+            movieIds: movieIds
+        })
+    })
+
+    const parsedResult = await result.json()
+
+    const { data } = parsedResult
+
+    return data
 }

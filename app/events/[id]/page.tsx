@@ -1,22 +1,10 @@
-import VoteWidget from "@/components/VoteWidget"
+import { EventMovieAdder } from "@/components/EventModieAdder"
 import VotingWidget from "@/components/VotingWidget"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { associateMoviesWithEvent } from "@/utils/server-actions"
-import { Event, Movie, MovieEvent, Vote } from "@prisma/client"
+import { Movie, Vote } from "@prisma/client"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 
-
-async function handleMovieAdding(data: FormData) {
-    'use server'
-    console.log(`data: `, data)
-
-    const movieIds = data.getAll('movie-id').map(id => Number(id))
-    const eventId = Number(data.get('event-id')!)
-    const succesfulWrites = await associateMoviesWithEvent(eventId, movieIds)
-    redirect(`/events/${eventId}`)
-}
 
 
 export default async function EventPage({params}: {params: {id: string}}) {
@@ -64,6 +52,10 @@ async function EventMovies({eventId}: {eventId: number}) {
         }
     })
 
+    const initialMovieOptions = await prisma.movie.findMany({
+        take: 6
+    })
+
 
     return        (<div>
     <h2>The movies you can vote for</h2>
@@ -76,7 +68,7 @@ async function EventMovies({eventId}: {eventId: number}) {
     </ul>
 
 
-    <EventMovieAdder eventId={eventId} />
+    <EventMovieAdder eventId={eventId} initialMovieOptions={initialMovieOptions} />
 
 </div>)
 }
@@ -128,26 +120,3 @@ async function VoteOption({votes, movie, movieEventId}: VoteOptionProps) {
     </div>
 }
 
-
-async function EventMovieAdder({eventId}: {eventId: number}) {
-
-    const movies = await prisma.movie.findMany()
-
-
-
-    return (<div>
-        <h2>Add a movie to the event</h2>
-        <form action={handleMovieAdding}>
-            <input type="hidden" name="event-id" id="event-id" value={eventId} />
-            <select multiple name="movie-id" id="movie-id"
-            className="text-white bg-gray-700 p-5">
-
-                {
-                    movies.map(movie => <option className="border-b-2 border-white" key={movie.id} value={movie.id}>{movie.title}</option>)
-                }
-            </select>
-            <br/>
-            <button type="submit" className="p-4 border-2 border-white rounded-md">Add movie</button>
-        </form>
-    </div>)
-}

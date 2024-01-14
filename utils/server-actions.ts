@@ -79,8 +79,11 @@ export async function deleteMovieReview(movieId: number) {
 
 export async function createEvent(title: string, description: string, plannedDate: Date, theme: string ) {
 
+    const userId = await getUserId()
+
     const createdEvent = await prisma.event.create({
         data: {
+            userId: userId,
             title,
             description,
             plannedDate,
@@ -90,41 +93,4 @@ export async function createEvent(title: string, description: string, plannedDat
 
     return createdEvent
 
-export async function associateMoviesWithEvent(eventId: number, movieIds: Array<number>) {
-    if (movieIds.length == 0) {
-        return 0
-    }
-
-    const userId = await getUserId()
-
-    const alreadyAssociatedIds = (await prisma.movieEvent.findMany({
-        where: {
-            eventId: eventId,
-            movieId: {
-                in: movieIds
-            }
-        },
-        select: {
-            movieId: true
-        }
-    }))
-    .map(d => d.movieId)
-
-    const newMovieIdsToAssociate = movieIds.filter((movieId) => !alreadyAssociatedIds.includes(movieId))
-
-    const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
-        eventId: eventId,
-        movieId: movieId,
-         userId: userId
-    }))
-
-
-    const result = await prisma.movieEvent.createMany({
-        data: dataToInsert,
-        // Skips: only in the new data, or also for the database? Experiment
-        skipDuplicates: true
-    })
-
-
-    return result.count
 }

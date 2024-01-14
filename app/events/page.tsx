@@ -9,11 +9,14 @@ export default async function EventsPage() {
     
 
     return (
-        <div className="relative">
+        <div className="flex flex-col items-center gap-2 h-full">
             <h1>Events Page</h1>
-            <div className="fixed top-[25%] right-[10%] border-2 border-white rounded-full p-5">
-             <Link href="/events/create">Create Event?</Link>
+            <Link href={'/events/create'}>
+            <div className="p-5 bg-slate-400 rounded-md hover:bg-slate-800 border-2 border-transparent hover:border-white ">
+                Create New Event
             </div>
+            </Link>
+
             <ul>
                 {
                     events.map(e => (<li key={e.id}>
@@ -29,8 +32,6 @@ export default async function EventsPage() {
 async function EventListItem({event} : {event: Event}){
 
     const date = event.plannedDate
-    console.log('DATE: ', date)
-
 
     return <span>
         <Link href={`/events/${event.id}`}
