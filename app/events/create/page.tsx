@@ -15,18 +15,20 @@ async function handleSubmit(data: FormData) {
 }
 
 export default async function CreateEventPage() {
-        return <main>
-            <h1>Create Event</h1>
-            
-            <form action={handleSubmit}>
-                <FormRow displayValue="Title" separateDisplayValue name="event-title" type="text" value="" />
-                <FormRow displayValue="Theme" separateDisplayValue name="event-theme" type="text" value="" />
-                <FormRow displayValue="Description" separateDisplayValue name="event-description" type="textarea" value="" />
-                <div>
-                    <label htmlFor="event-date">Date</label>
-                    <input id="event-date" name="event-date" type="date" />
-                </div>
-                <button type="submit">Create Event</button>
-            </form>
-        </main>
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 1);
+
+
+    return <div>
+        <h1 className="text-center">Create New Event</h1>
+
+        <form action={handleSubmit} className="form">
+            <FormRow displayValue="Title" separateDisplayValue name="event-title" type="text" defaultValue="" />
+            <FormRow displayValue="Theme" separateDisplayValue name="event-theme" type="text" defaultValue="" />
+            <FormRow displayValue="Description" separateDisplayValue name="event-description" type="textarea" defaultValue="" />
+
+            <FormRow displayValue="Date" separateDisplayValue name="event-date" type="date" defaultValue={defaultDate.toISOString().split('T')[0]} />
+            <button className="m-auto" type="submit">Confirm</button>
+        </form>
+    </div>
 }
