@@ -15,7 +15,7 @@ let mw = authMiddleware({
 })
 
 
-if (runningLocally === 'true' && disableAuth === 'true') {
+if (disableAuth === 'true') {
     mw = authMiddleware({
         publicRoutes: (req) => true
     })
