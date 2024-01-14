@@ -9,8 +9,11 @@ export default async function EventsPage() {
     
 
     return (
-        <div>
+        <div className="relative">
             <h1>Events Page</h1>
+            <div className="fixed top-[25%] right-[10%] border-2 border-white rounded-full p-5">
+             <Link href="/events/create">Create Event?</Link>
+            </div>
             <ul>
                 {
                     events.map(e => (<li key={e.id}>
