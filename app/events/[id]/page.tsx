@@ -1,23 +1,10 @@
 import { EventMovieAdder } from "@/components/EventModieAdder"
-import VoteWidget from "@/components/VoteWidget"
 import VotingWidget from "@/components/VotingWidget"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { associateMoviesWithEvent } from "@/utils/server-actions"
-import { Event, Movie, MovieEvent, Vote } from "@prisma/client"
+import { Movie, Vote } from "@prisma/client"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 
-
-async function handleMovieAdding(data: FormData) {
-    'use server'
-    console.log(`data: `, data)
-
-    const movieIds = data.getAll('movie-id').map(id => Number(id))
-    const eventId = Number(data.get('event-id')!)
-    const succesfulWrites = await associateMoviesWithEvent(eventId, movieIds)
-    redirect(`/events/${eventId}`)
-}
 
 
 export default async function EventPage({params}: {params: {id: string}}) {

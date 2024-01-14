@@ -1,13 +1,12 @@
 'use client'
 
-import { searchForMovieFromDatabase } from "@/utils/api";
+import { addMoviesToEventClient, searchForMovieFromDatabase } from "@/utils/api";
 import { Movie } from "@prisma/client"
-import { useState, useId} from "react"
-import Select from "react-select"
+import { useId } from "react"
 import AsyncSelect from 'react-select/async';
-// This just for value :/
-import { useDebounce } from 'usehooks-ts'
+
 import debounce from 'debounce-promise'
+import { useRouter } from "next/navigation";
 
 
 
@@ -16,23 +15,23 @@ interface EventMovieAdderProps {
     initialMovieOptions: Movie[]
 }
 
+//TODO: clear the multi selector after submittion
 export function EventMovieAdder(props: EventMovieAdderProps) {
-
-
-    const [delayHandle, setDelayHandle] = useState<{
-        handle: NodeJS.Timeout | null
-    }>({handle: null})
-
+    const router = useRouter()
 
     const { eventId, initialMovieOptions } = props
 
 
-    function getDelayHandle(){
-        return delayHandle
-    }
 
-    function handleMovieAdding() {
-        console.log('called function handleMovieAdding')
+
+    async function handleMovieAdding(data: FormData) {
+        const movieIds = data.getAll('event-movies')
+            .map(x => Number(x))
+
+        const succesfullyAddedMovies = await addMoviesToEventClient(eventId, movieIds)
+        if (succesfullyAddedMovies > 0) {
+            router.refresh()
+        }
     }
 
     const id = useId()
@@ -66,8 +65,10 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
 
             <br/>
             <div>
-                <h4>Async test</h4>
+                <h4>Add movie(s)</h4>
                 <AsyncSelect
+                    name="event-movies"
+                    id="event-movies"
                     className="text-black"
                     isMulti
                     cacheOptions
