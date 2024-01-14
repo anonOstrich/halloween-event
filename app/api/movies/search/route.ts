@@ -16,7 +16,6 @@ export async function POST(req: NextRequest){
         Authorization: `Bearer ${access_token}`
     }})
 
-    // console.log('from the api: ', something)
     const jsonResponse = await something.json();
 
     const foundMovies: Array<any> = jsonResponse.results;

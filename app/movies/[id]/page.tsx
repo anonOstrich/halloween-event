@@ -1,5 +1,6 @@
 import Review from "@/components/Review"
 import ReviewSummary from "@/components/ReviewSummary"
+import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
 import { deleteMovie } from "@/utils/server-actions"
 import { Movie } from "@prisma/client"
@@ -24,12 +25,18 @@ export default async function MoviePage({ params }: { params: { id: string, } })
         return <div>Cannot find movie by id {movieId} 🐅</div>
     }
     const user = movie.user
+    const userId = await getUserId()
 
-
+    const userAllowedToModify = userId === user.id
 
     return <main className="flex flex-col justify-between max-w-2xl mx-auto gap-10">
-        <DeleteMovieComponent movieId={movie.id} />
-        <UpdateMovieComponent movie={movie} />
+        {
+            userAllowedToModify && (<div className="absolute top-[15%] right-10">
+                <DeleteMovieComponent movieId={movie.id} />
+                <UpdateMovieComponent movie={movie} />
+            </div>)
+        }
+
         <article className="bg-gray-700 px-5 py-5 border-2 rounded-md flex flex-col gap-5">
             <h2>{movie.title}</h2>
             <p>Year: {movie.year}</p>
@@ -58,7 +65,7 @@ interface DeleteMovieComponentProps {
 
 // This needs to consider cursor on the whole
 function DeleteMovieComponent({ movieId }: DeleteMovieComponentProps) {
-    return <div className="absolute top-0 right-0 mx-5 my-5 bg-red-200 rounded-full min-w-[50px] min-h-[50px] flex justify-center align-middle">
+    return <div className="mx-5 my-5 bg-red-200 rounded-full min-w-[50px] min-h-[50px] flex justify-center align-middle">
         <form action={handleDeletion} className="flex justify-center align-middle">
             <input type="hidden" name="movie-id" value={movieId} />
             <button className="text-black" type="submit">X</button>
@@ -67,22 +74,13 @@ function DeleteMovieComponent({ movieId }: DeleteMovieComponentProps) {
 }
 
 
-async function serverHandleClickUpdate(data: FormData) {
-    'use server'
-    console.log('handling :3')
-}
-
-
 interface UpdateMovieComponentProps {
     movie: Movie
 }
 
 function UpdateMovieComponent({ movie }: UpdateMovieComponentProps) {
-    console.log('AM I HERE?')
     const { title, id } = movie
 
     // Relate to the position of the delete button: maybe they should be in the same container, even?
-    return <div className="absolute top-[100px] right-0">
-        <Link href={`/movies/${id}/edit`}>Update</Link>
-    </div>
+    return (<Link href={`/movies/${id}/edit`} className="block border-2 border-white p-3">Update</Link>)
 }

@@ -1,6 +1,5 @@
 import { EventCard } from "@/components/EventCard"
 import { prisma } from "@/utils/db"
-import { Event } from "@prisma/client"
 import Link from "next/link"
 
 
