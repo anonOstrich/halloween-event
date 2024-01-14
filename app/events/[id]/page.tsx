@@ -66,7 +66,7 @@ async function EventMovies({eventId}: {eventId: number}) {
     })
 
     const initialMovieOptions = await prisma.movie.findMany({
-        take: 2
+        take: 6
     })
 
 

@@ -43,3 +43,13 @@ export async function voteForEventMovie(movieEventId: number, voteType: VoteType
     const { vote } = data
     return vote
 }
+
+export async function searchForMovieFromDatabase(searchTerm: string): Promise<Movie[]> {
+    if (searchTerm.length == 0) {
+        return []
+    } 
+    const response = await fetch(`/api/movies/search-db?searchTerm=${encodeURIComponent(searchTerm)}`)
+    const {data} = await response.json();
+    const { movies } = data
+    return movies
+}
