@@ -104,16 +104,20 @@ export default async function ProfilePage() {
     </main>
 }
 
-// This time: no need to link to the user. Yes need to link to the movie! So might be a good idea just to fetch the names of the movies during the initial query...
-// But this functionality could be passed as props to the review summary component, for sure? Linking the review with user and movie filled out would give sufficient access
 function ReviewComponent({ movie, review }: { movie: Movie, review: Review }) {
+
+    const textReviewEl = (<div>
+        <span>Review:</span>
+        <p className="bg-gray-800 py-5 px-2">{review.reviewText}</p>
+    </div>)
     return <section className="border border-red-600 text-base p-2 flex flex-col gap-1">
         <span className="text-base">{movie.title}</span><br />
         <span>Score: {review.score} / 19</span><br />
-        <div>
-            <span>Review:</span>
-            <p className="bg-gray-800 py-5 px-2">{review.reviewText}</p>
-        </div>
+
+        {
+            review.reviewText != null && textReviewEl
+        }
+
 
     </section>
 }

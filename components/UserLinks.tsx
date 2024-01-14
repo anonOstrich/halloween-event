@@ -4,7 +4,7 @@ import Link from "next/link";
 
 
 export default function UserLinks() {
-    const authDisabled = process.env["DISABLE_AUTH"] === 'true' && process.env["LOCAL_ENVIRONMENT"] === 'true'
+    const authDisabled = process.env["DISABLE_AUTH"] === 'true'
 
     if (authDisabled) {
         return <li className="px-5 py-3 text-green-400">DEMO WITHOUT AUTH</li>
