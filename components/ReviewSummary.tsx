@@ -35,9 +35,7 @@ export default async function ReviewSummary(props: { movie: Movie }) {
     })
 
     if (reviews.length == 0) {
-        return <section className="bg-gray-200 px-5 py-5">
-            No reviews
-        </section>
+        return <p>No reviews</p>
     }
 
     const formattedReviews = reviews.map(review => {
@@ -61,7 +59,7 @@ export default async function ReviewSummary(props: { movie: Movie }) {
 
     // Currently not useful if I'm fetching all the reviews in any case, 
     // but extending to show only a sections should be easier
-    const {_avg, _count} = await prisma.review.aggregate({
+    const { _avg, _count } = await prisma.review.aggregate({
         where: {
             movieId: movie.id
         },
@@ -79,22 +77,18 @@ export default async function ReviewSummary(props: { movie: Movie }) {
     const displayAll = _count.score! <= 4
 
 
-    return <section className="bg-gray-200 px-5 py-5 text-black">
-        <h2>Reviews summary</h2>
-        <span className="text-base">Result of avg: {averageFormatted}</span>
-        <ul className="flex flex-col gap-2">
+    return <section className="px-5 py-5 flex flex-col items-center border-2 border-gray-900 rounder-lg gap-5">
+        <h2>Summary of reviews</h2>
+        <span className="text-base">Average rating: {averageFormatted}</span>
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {
                 (displayAll ? formattedReviews : formattedReviews.slice(0, 4)).map(review => (<li key={review.reviewer}><SingleReviewSummary review={review} /></li>))
             }
         </ul>
         {
             !displayAll && <div>
-                <p>And {formattedReviews.length - 4} other reviews. <Link href={`/movies/${movie.id}/reviews`}>Read them all</Link></p>
+                <p>And {formattedReviews.length - 4} other reviews. <Link href={`/movies/${movie.id}/reviews`} className="">Read all</Link></p>
             </div>
-        }
-        {
-            //TODO: REMOVE! only for testing out that this link and page work
-            <Link href={`/movies/${movie.id}/reviews`}>Read them all</Link>
         }
     </section>
 }
@@ -108,8 +102,8 @@ function SingleReviewSummary({ review }: { review: FormattedReview }) {
         review.text.length > 153 ? review.text.substring(0, 150) + "..." : review.text
     )
 
-    return <div className="border-2 border-black px-3 py-2 bg-slate-300">
-        <div className="text-base">
+    return <div className="border-2 border-gray-700 px-3 py-2 flex flex-col gap-5">
+        <div className="text-lg">
             <span>{review.score} / 19</span>
             {
                 review.text != null && (
