@@ -1,3 +1,4 @@
+import { EventMovieAdder } from "@/components/EventModieAdder"
 import VoteWidget from "@/components/VoteWidget"
 import VotingWidget from "@/components/VotingWidget"
 import { getUserId } from "@/utils/auth"
@@ -64,6 +65,10 @@ async function EventMovies({eventId}: {eventId: number}) {
         }
     })
 
+    const initialMovieOptions = await prisma.movie.findMany({
+        take: 2
+    })
+
 
     return        (<div>
     <h2>The movies you can vote for</h2>
@@ -76,7 +81,7 @@ async function EventMovies({eventId}: {eventId: number}) {
     </ul>
 
 
-    <EventMovieAdder eventId={eventId} />
+    <EventMovieAdder eventId={eventId} initialMovieOptions={initialMovieOptions} />
 
 </div>)
 }
@@ -128,26 +133,3 @@ async function VoteOption({votes, movie, movieEventId}: VoteOptionProps) {
     </div>
 }
 
-
-async function EventMovieAdder({eventId}: {eventId: number}) {
-
-    const movies = await prisma.movie.findMany()
-
-
-
-    return (<div>
-        <h2>Add a movie to the event</h2>
-        <form action={handleMovieAdding}>
-            <input type="hidden" name="event-id" id="event-id" value={eventId} />
-            <select multiple name="movie-id" id="movie-id"
-            className="text-white bg-gray-700 p-5">
-
-                {
-                    movies.map(movie => <option className="border-b-2 border-white" key={movie.id} value={movie.id}>{movie.title}</option>)
-                }
-            </select>
-            <br/>
-            <button type="submit" className="p-4 border-2 border-white rounded-md">Add movie</button>
-        </form>
-    </div>)
-}
