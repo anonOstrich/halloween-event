@@ -48,8 +48,13 @@ export default function AddMoviePage() {
                 <input id="title" name="title" type="text" value={title} onChange={e => setTitle(e.target.value)} required />
             </div>
 
+
             <div className="flex justify-center gap-4">
                 <label htmlFor="year">Year</label>
+                {
+                    // TODO: Should these constraints be set somewhere else than inline?
+                    // DB or just a general central configuration object?
+                }
                 <input id="year" name="year" type="number" min={1880} max={currentYear} 
                 value={year}
                 onChange={e => setYear(Number(e.target.value))}
