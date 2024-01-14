@@ -54,7 +54,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
         }
     })
 
-    const defaultScore = possibleExistingReview == null ? 10 :possibleExistingReview.score
+    const defaultScore = possibleExistingReview == null ? 10 : possibleExistingReview.score
 
 
 
@@ -65,19 +65,26 @@ export default async function ReviewPage({ params }: { params: { id: string } })
 
     return (
         <section>
-            <h2>{movie.title}</h2>
-            <form action={handleReviewSubmission}>
+            <h1 className="text-center">{movie.title}</h1>
+            <form action={handleReviewSubmission} className="form">
                 <input type="hidden" name="movie-id" id='movie-id' value={movie.id} />
 
-                <FormRow type="textarea" displayValue="Review text" separateDisplayValue value={defaultText} name="movie-review-text" />
-                <ExperimentalThumbsUpWidget config={{min: 0, max: 19}} input={{score: defaultScore}} />
-                <button type="submit">{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
+                <FormRow type="textarea" displayValue="Review text" separateDisplayValue defaultValue={defaultText} name="movie-review-text" />
+                <ExperimentalThumbsUpWidget config={{ min: 0, max: 19, label: "Score" }} input={{ score: defaultScore }} />
+                <div>
+
+                </div>
+
+                <div className="w-full flex justify-center items-center gap-5">
+                    <button type="submit" className="mt-0" >{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
+                    {
+                        possibleExistingReview == null ? (<Link className="block" href={`/movies/${movie.id}`}>Cancel</Link>) : (<form action={handleReviewDeletion}>
+                            <input type="hidden" name="movie-id" value={movie.id} />
+                            <button type="submit">Delete review
+                            </button></form>)
+                    }
+                </div>
             </form>
-            {
-                possibleExistingReview == null ? (<Link href={`/movies/${movie.id}`}>Cancel</Link>) : (<form action={handleReviewDeletion}>
-                    <input type="hidden" name="movie-id" value={movie.id} />
-                    <button type="submit">Delete review
-                    </button></form>)
-            }
+
         </section>)
 }
