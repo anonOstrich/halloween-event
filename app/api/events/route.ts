@@ -6,9 +6,6 @@ export const POST = async (req: NextRequest) => {
 
     const parsedBody = await req.json()
 
-    console.log('parsed post event body', parsedBody)
-
-
     return Response.json({
         data: {
             example: 'hewo :3'

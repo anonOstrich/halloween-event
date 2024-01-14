@@ -1,26 +1,29 @@
 
 import { prisma } from "@/utils/db";
-import { NextApiRequest } from "next";
 import { NextRequest } from "next/server";
-import { tsBigIntKeyword } from '../../../../node_modules/@babel/types/lib/index-legacy.d';
 import { Movie } from "@prisma/client";
 
-export async function GET(req: NextApiRequest){
+export async function GET(req: NextRequest){
 
     const url = new URL(req.url!)
     const searchTerm = url.searchParams.get('searchTerm')
     if (searchTerm == null || searchTerm.trim().length == 0) {
-        return []
+        return   Response.json({
+            data: {
+                movies: []
+            },
+        }, {
+            status: 200,
+        })
     }
     
 
     const parsedSearchTerm = decodeURIComponent(searchTerm)
-    console.log('parsed: ', parsedSearchTerm)
 
     const results = await prisma.movie.findMany({
         where: {
             title: {
-                contains: searchTerm,
+                contains: parsedSearchTerm,
                 // case insensitivity
                 mode: 'insensitive'
             }
@@ -28,10 +31,6 @@ export async function GET(req: NextApiRequest){
         // TODO: set these constants somewhere else
         take: 7
     })
-
-    console.log('Found from the database: ', JSON.stringify(results, null, 2))
-    // const reqBody = await req.json()
-    // URL encode! 
 
 
     const movies: Array<Movie> = results

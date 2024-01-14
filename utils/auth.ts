@@ -7,7 +7,7 @@ export function getSecret() {
 }
 
 export async function getUserId(){
-    if (process.env['LOCAL_ENVIRONMENT'] === 'true' && process.env['DISABLE_AUTH'] === 'true') {
+    if (process.env['DISABLE_AUTH'] === 'true') {
         return 2
     }
 

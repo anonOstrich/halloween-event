@@ -20,8 +20,6 @@ async function serverHandleMovieEditSubmit(data: FormData) {
     }
 
     const updatedMovie = await updateMovie(id, title, year, description)
-    //TODO: Add JSON.prettyStringify in the project
-    console.log(`Movie after the update: `, JSON.stringify(updatedMovie, null, 2))
 
     return redirect(`/movies/${id}`)
 }

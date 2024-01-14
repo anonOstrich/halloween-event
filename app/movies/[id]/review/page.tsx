@@ -26,7 +26,6 @@ async function handleReviewDeletion(data: FormData) {
     const movieId = Number(data.get('movie-id'))
 
     const deletedReview = await deleteMovieReview(movieId)
-    console.log('DELETED THE FOLLOWING MOVIE REVIEW: ', deletedReview)
     return redirect(`/movies/${movieId}`)
 
 }
