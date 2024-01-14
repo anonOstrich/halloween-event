@@ -42,12 +42,12 @@ export default async function MovieEditPage({ params }: { params: { id: string }
         <h3>Edit {movie.title}</h3>
         <form action={serverHandleMovieEditSubmit}>
             <input type="hidden" name="movie-id" value={movie.id} />
-            <FormRow displayValue="Title" name="movie-title" type="text" separateDisplayValue value={movie.title} />
+            <FormRow displayValue="Title" name="movie-title" type="text" separateDisplayValue defaultValue={movie.title} />
 
-            <FormRow value={movie.year} displayValue="Release year" separateDisplayValue name="movie-year" type="number" />
+            <FormRow defaultValue={movie.year} displayValue="Release year" separateDisplayValue name="movie-year" type="number" />
 
 
-            <FormRow value={movie.description} displayValue="Description" separateDisplayValue name="movie-description" type="textarea" />
+            <FormRow defaultValue={movie.description} displayValue="Description" separateDisplayValue name="movie-description" type="textarea" />
 
             <button type="submit">Save</button>
         </form>

@@ -23,11 +23,11 @@ export default async function CreateEventPage() {
         <h1 className="text-center">Create New Event</h1>
 
         <form action={handleSubmit} className="form">
-            <FormRow displayValue="Title" separateDisplayValue name="event-title" type="text" value="" />
-            <FormRow displayValue="Theme" separateDisplayValue name="event-theme" type="text" value="" />
-            <FormRow displayValue="Description" separateDisplayValue name="event-description" type="textarea" value="" />
+            <FormRow displayValue="Title" separateDisplayValue name="event-title" type="text" defaultValue="" />
+            <FormRow displayValue="Theme" separateDisplayValue name="event-theme" type="text" defaultValue="" />
+            <FormRow displayValue="Description" separateDisplayValue name="event-description" type="textarea" defaultValue="" />
 
-            <FormRow displayValue="Date" separateDisplayValue name="event-date" type="date" value={defaultDate.toISOString().split('T')[0]} />
+            <FormRow displayValue="Date" separateDisplayValue name="event-date" type="date" defaultValue={defaultDate.toISOString().split('T')[0]} />
             <button className="m-auto" type="submit">Confirm</button>
         </form>
     </div>

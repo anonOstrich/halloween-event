@@ -1,11 +1,13 @@
 'use client'
 
 
+import FormRow from "@/components/FormRow"
 import MovieApiSearch from "@/components/MovieApiSearch"
 import { addNewMovie } from "@/utils/api"
 import { useRouter } from "next/navigation"
 import { FormEventHandler, useState } from "react"
-import { toast,  } from "react-toastify"
+import { toast, } from "react-toastify"
+
 
 
 export default function AddMoviePage() {
@@ -14,7 +16,7 @@ export default function AddMoviePage() {
     const [description, setDescription] = useState<string>('')
 
 
-    const something = useRouter()
+    const router = useRouter()
 
 
 
@@ -31,40 +33,28 @@ export default function AddMoviePage() {
         setYear(2000)
         setDescription('')
         toast.success('Successfully added')
-        something.push('/movies')
-        // TODO: redirect to the movie page? Maybe after a success message?
+        router.push('/movies')
+
     }
 
 
     const currentYear = (new Date()).getFullYear()
-    
 
-    return <main className="max-w-2xl mx-auto">
-        <p>TODO: Ohjeistus. (Minkälainen on hyvä? Mitä toiveita on elokuville? Mitä rajoja ihmisillä on elokuville?)</p>
+
+    return <div>
+
         <MovieApiSearch completeMovieInformationCallBack={fillFormWithMovieDetails} />
-        <form onSubmit={handleFormSubmission} className="flex flex-col gap-10">
-            <div className="flex justify-center gap-4">
-                <label htmlFor="title">Title</label>
-                <input id="title" name="title" type="text" value={title} onChange={e => setTitle(e.target.value)} required />
-            </div>
 
-            <div className="flex justify-center gap-4">
-                <label htmlFor="year">Year</label>
-                <input id="year" name="year" type="number" min={1880} max={currentYear} 
+        <form onSubmit={handleFormSubmission} className="form">
+            <FormRow displayValue="Title" separateDisplayValue name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <FormRow displayValue="Year" separateDisplayValue name="year" type="number"
+                //min={1880} max={currentYear}
                 value={year}
-                onChange={e => setYear(Number(e.target.value))}
-                required />
-            </div>
+                onChange={e => setYear(Number(e.target.value))} />
 
-            <div className="flex justify-center gap-4">
-                <label htmlFor="description" className="align-self-center self-center">Description</label>
-                <textarea name="description" id="description"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                required></textarea>
+            <FormRow displayValue="Description" separateDisplayValue name="description" type="textarea" value={description} onChange={e => setDescription(e.target.value)} />
 
-            </div>
 
-            <button type="submit" className='button'>Submit</button>
-        </form></main>
+            <button type="submit" className='button m-auto'>Submit</button>
+        </form></div>
 }

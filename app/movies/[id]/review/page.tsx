@@ -54,7 +54,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
         }
     })
 
-    const defaultScore = possibleExistingReview == null ? 10 :possibleExistingReview.score
+    const defaultScore = possibleExistingReview == null ? 10 : possibleExistingReview.score
 
 
 
@@ -69,8 +69,8 @@ export default async function ReviewPage({ params }: { params: { id: string } })
             <form action={handleReviewSubmission}>
                 <input type="hidden" name="movie-id" id='movie-id' value={movie.id} />
 
-                <FormRow type="textarea" displayValue="Review text" separateDisplayValue value={defaultText} name="movie-review-text" />
-                <ExperimentalThumbsUpWidget config={{min: 0, max: 19}} input={{score: defaultScore}} />
+                <FormRow type="textarea" displayValue="Review text" separateDisplayValue defaultValue={defaultText} name="movie-review-text" />
+                <ExperimentalThumbsUpWidget config={{ min: 0, max: 19 }} input={{ score: defaultScore }} />
                 <button type="submit">{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
             </form>
             {
