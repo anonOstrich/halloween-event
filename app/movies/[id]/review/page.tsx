@@ -1,7 +1,7 @@
+import ExperimentalThumbsUpWidget from "@/components/ExperimentalThumbsUpWidget"
 import FormRow from "@/components/FormRow"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { convertScoreToNumber } from "@/utils/score-utils"
 import { deleteMovieReview, reviewMovie } from "@/utils/server-actions"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -55,8 +55,10 @@ export default async function ReviewPage({ params }: { params: { id: string } })
         }
     })
 
-    console.log('EXISTING REVIEW: ', possibleExistingReview)
-    const defaultScore = possibleExistingReview == null ? 10 : convertScoreToNumber(possibleExistingReview.score)
+    const defaultScore = possibleExistingReview == null ? 10 :possibleExistingReview.score
+
+
+
 
     // TODO: this is not the most elegant syntax
     const defaultText = possibleExistingReview == null ? '' : possibleExistingReview.reviewText ?? ''
@@ -68,8 +70,8 @@ export default async function ReviewPage({ params }: { params: { id: string } })
             <form action={handleReviewSubmission}>
                 <input type="hidden" name="movie-id" id='movie-id' value={movie.id} />
 
-                <FormRow type="number" displayValue="Score (0-19)" separateDisplayValue value={defaultScore} name="movie-score" />
                 <FormRow type="textarea" displayValue="Review text" separateDisplayValue value={defaultText} name="movie-review-text" />
+                <ExperimentalThumbsUpWidget config={{min: 0, max: 19}} input={{score: defaultScore}} />
                 <button type="submit">{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
             </form>
             {

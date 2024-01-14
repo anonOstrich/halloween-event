@@ -5,23 +5,41 @@ import { PrismaClient } from "@prisma/client";
 
 async function clearExistingValues(prisma: PrismaClient) {
 
+    // Easier to just drop the schema and recreate it?
+
     await prisma.vote.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Vote"', 'id'), 1)`;
+
+
+
     await prisma.movieEvent.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."MovieEvent"', 'id'), 1)`;
+
+    await prisma.movie.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Movie"', 'id'), 1)`;
+
+
+    await prisma.event.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Event"', 'id'), 1)`;
+
+
+
+    await prisma.user.deleteMany({})
+    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."User"', 'id'), 1)`;
+
+
+
+
+
 
 
 
     await prisma.review.deleteMany({})
     await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Review"', 'id'), 1)`;
-    await prisma.movie.deleteMany({})
-    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Movie"', 'id'), 1)`;
 
-    await prisma.user.deleteMany({})
-    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."User"', 'id'), 1)`;
 
-    await prisma.event.deleteMany({})
-    await prisma.$queryRaw`SELECT setval(pg_get_serial_sequence('public."Event"', 'id'), 1)`;
+
+
 
 
 
@@ -60,17 +78,17 @@ async function main(){
         const reviews = await prisma.review.createMany({
             data: [
                 {
-                    score: "FIFTEEN",
+                    score: 15,
                     movieId: 2,
                     userId: 2
                 },
                 {
-                    score: "SEVENTEEN",
+                    score: 17,
                     movieId: 2,
                     userId: 4
                 },
                 {
-                    score: "THREE",
+                    score: 3,
                     movieId: 3,
                     userId: 2
                 }
@@ -86,13 +104,15 @@ async function main(){
                 theme: 'Happy',
                 title: 'Joie de vivre',
                 plannedDate: new Date(),
+                userId: 3
             }
         })
 
         const movieEvent = await prisma.movieEvent.create({
             data: {
                 movieId: 2,
-                eventId: event.id
+                eventId: event.id, 
+                userId: 3
             }
         })
 

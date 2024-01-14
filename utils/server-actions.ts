@@ -1,6 +1,5 @@
 import { getUserId } from "./auth"
 import { prisma } from "./db"
-import { convertNumberToScore } from "./score-utils"
 
 // Utilities called from server actions. An alternative to calling the API from client
 export async function deleteMovie(id: number) {
@@ -33,7 +32,11 @@ export async function updateMovie(id: number, title: string, year: number, descr
 
 export async function reviewMovie(id: number, score: number, text: string | null) {
     const userId = await getUserId()
-    const convertedScore = convertNumberToScore(score)
+
+    //TODO: Don't just throw...
+    if (score < 0 || score > 19) { 
+        throw new Error('Score must be between 0 and 19')
+    }
     
     const updatedReview = await prisma.review.upsert({
         where: {
@@ -43,13 +46,13 @@ export async function reviewMovie(id: number, score: number, text: string | null
             }
         },
         create: {
-            score: convertedScore,
+            score: score,
             reviewText: text,
             userId: userId,
             movieId: id
         }, 
         update: {
-            score: convertedScore,
+            score: score,
             reviewText: text
         }
 
@@ -73,6 +76,7 @@ export async function deleteMovieReview(movieId: number) {
     return deletedReview
 }
 
+
 export async function createEvent(title: string, description: string, plannedDate: Date, theme: string ) {
 
     const createdEvent = await prisma.event.create({
@@ -85,4 +89,42 @@ export async function createEvent(title: string, description: string, plannedDat
     })
 
     return createdEvent
+
+export async function associateMoviesWithEvent(eventId: number, movieIds: Array<number>) {
+    if (movieIds.length == 0) {
+        return 0
+    }
+
+    const userId = await getUserId()
+
+    const alreadyAssociatedIds = (await prisma.movieEvent.findMany({
+        where: {
+            eventId: eventId,
+            movieId: {
+                in: movieIds
+            }
+        },
+        select: {
+            movieId: true
+        }
+    }))
+    .map(d => d.movieId)
+
+    const newMovieIdsToAssociate = movieIds.filter((movieId) => !alreadyAssociatedIds.includes(movieId))
+
+    const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
+        eventId: eventId,
+        movieId: movieId,
+         userId: userId
+    }))
+
+
+    const result = await prisma.movieEvent.createMany({
+        data: dataToInsert,
+        // Skips: only in the new data, or also for the database? Experiment
+        skipDuplicates: true
+    })
+
+
+    return result.count
 }

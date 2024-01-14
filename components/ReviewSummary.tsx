@@ -1,5 +1,4 @@
 import { prisma } from "@/utils/db";
-import { convertScoreToNumber } from "@/utils/score-utils";
 import { Movie } from "@prisma/client";
 import Link from "next/link";
 
@@ -11,11 +10,7 @@ interface FormattedReview {
     reviewer: string
 }
 
-// This sucks: apparrently prisma doesn't allow for using enums as integers as I'd anticipated
-// Options: A) run function in DB when adding results, store in own columb
-// B) convert in database with each query
-// C) conversion on client side
-// For now, I'll choose C. But this requires iterating through all the reviews and consequently sending all of them over the database connection. Not the best! :/
+
 export default async function ReviewSummary(props: { movie: Movie }) {
     const { movie } = props
 
@@ -50,7 +45,7 @@ export default async function ReviewSummary(props: { movie: Movie }) {
         // OR: fix this for the client
         const createdDate = review.createdAt.toLocaleString()
         const updatedDate = review.updatedAt.toLocaleString()
-        const score = convertScoreToNumber(review.score)
+        const score = review.score
         const text = review.reviewText
         const reviewer = review.user.email
 
@@ -64,10 +59,24 @@ export default async function ReviewSummary(props: { movie: Movie }) {
 
     }) as Array<FormattedReview>
 
-    const average = (formattedReviews.map(review => review.score).reduce((acc, el) => acc + el, 0) / formattedReviews.length)
+    // Currently not useful if I'm fetching all the reviews in any case, 
+    // but extending to show only a sections should be easier
+    const {_avg, _count} = await prisma.review.aggregate({
+        where: {
+            movieId: movie.id
+        },
+        _avg: {
+            score: true
+        },
+        _count: {
+            score: true
+        }
+    })
+
+    const average = _avg.score!
     const averageFormatted = average.toFixed(2)
 
-    const displayAll = formattedReviews.length <= 4
+    const displayAll = _count.score! <= 4
 
 
     return <section className="bg-gray-200 px-5 py-5 text-black">

@@ -1,5 +1,5 @@
 {
-  "name": "halloween-event",
+  "name": "movie-club",
   "version": "0.1.0",
   "private": true,
   "prisma": {
@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "prisma-build": "prisma generate && prisma db push",
+    "prisma-build": "prisma generate && prisma db push && npm run create-db-constraints",
+    "create-db-constraints": "ts-node prisma/enforce_rating_check.ts",
     "start": "next start",
     "lint": "next lint",
     "local-test": "docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 54320:5432 postgres"
