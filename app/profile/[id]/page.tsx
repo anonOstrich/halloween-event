@@ -1,6 +1,7 @@
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
 import { Movie, Review } from "@prisma/client"
+import Link from "next/link"
 
 
 export default async function ProfilePage() {
@@ -67,7 +68,8 @@ export default async function ProfilePage() {
         },
         include: {
             movie: true
-        }}
+        }
+    }
     )
 
     const maxMovie = await prisma.review.findFirst({
@@ -77,45 +79,50 @@ export default async function ProfilePage() {
         },
         include: {
             movie: true
-        }}
+        }
+    }
     )
 
 
 
 
-    return <main className="flex flex-col gap-5 px-5">
-        <h3>Here is your profile {user.email}</h3>
-        <div className="border-2 border-white px-5 py-2">
-            <span>Your stats:</span>
-            <ul>
+    return <div className="flex flex-col gap-5 px-5 items-stretch">
+        <h1 className="text-4xl">Here is your profile, {user.email}</h1>
+        <div className="px-5 py-2 bg-gray-900 rounded-md text-lg">
+            <h2 className="text-2xl">Your stats:</h2>
+            <ul className="mt-4">
                 <li>Reviewed {_count.score} movies</li>
                 <li>Average rating (/19): {_avg.score}</li>
-                <li>Highest rating: {_max.score} (for {minMovie?.movie.title})</li>
-                <li>Lowest rating: {_min.score} (for {maxMovie?.movie.title})</li>
+                <li>Highest rating: {_max.score} (for <Link href={`/movies/${minMovie?.id}`}>{minMovie?.movie.title}</Link>)</li>
+                <li>Lowest rating: {_min.score} (for <Link href={`/movies/${maxMovie?.id}`}>{maxMovie?.movie.title}</Link>)</li>
             </ul>
         </div>
 
 
-        <ul className="border-2 border-white px-5 py-2 flex flex-col gap-3">
-            {reviews.map(r => (<li key={r.id}>
-                <ReviewComponent movie={r.movie} review={r} />
-            </li>))}
-        </ul>
-    </main>
+        <div className="flex flex-col items-center bg-gray-900 rounded-md">
+            <h3>Your reviews:</h3>
+            <ul className=" px-5 py-2 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 items-stretch">
+                {reviews.map(r => (<li key={r.id} className="">
+                    <ReviewComponent movie={r.movie} review={r} />
+                </li>))}
+            </ul>
+        </div>
+    </div>
 }
 
 function ReviewComponent({ movie, review }: { movie: Movie, review: Review }) {
 
-    const textReviewEl = (<div>
-        <span>Review:</span>
-        <p className="bg-gray-800 py-5 px-2">{review.reviewText}</p>
+    const textReviewEl = (<div className="flex flex-col gap-1 mt-2">
+        <span>Review text:</span>
+        <p className="bg-gray-800 py-1 px-3 rounded-sm">{review.reviewText}</p>
     </div>)
-    return <section className="border border-red-600 text-base p-2 flex flex-col gap-1">
-        <span className="text-base">{movie.title}</span><br />
-        <span>Score: {review.score} / 19</span><br />
+
+    return <section className="text-base py-2 px-5 flex flex-col gap-1 bg-gray-950 rounded-md h-full">
+        <h2 className="text-2xl">{movie.title}</h2>
+        <span>Score: {review.score} / 19</span>
 
         {
-            review.reviewText != null && textReviewEl
+            review.reviewText != null && review.reviewText.trim().length > 0 && textReviewEl
         }
 
 
