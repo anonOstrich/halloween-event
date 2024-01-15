@@ -10,12 +10,17 @@
   --background-color: rgb(var(--background-end-rgb));
   --border-radius: 15px;
 
+  /* For now: always apply dark-mode themes, since haven't tested without it*/
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -23,6 +28,7 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+*/
 
 html {
   font-size: 16px;
