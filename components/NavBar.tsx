@@ -12,7 +12,7 @@ export default async function NavBar() {
 
     const loggedIn = isLoggedIn()
 
-    return <nav className='border-b-2 border-[var(--foreground-color)]'>
+    return <nav className='border-b-2 border-accent-100 dark:border-dark-accent-100'>
         <ul className='flex justify-center gap-5'>
             {pages.map(page => <li key={page.url} className='px-5 py-3'>
                 <Link href={page.url}>{page.title}</Link>

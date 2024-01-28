@@ -21,7 +21,8 @@ const config: Config = {
         "dark-primary-200" :"#69b4ff",
         "dark-primary-300": "#e0ffff",
         "dark-accent-100":"#006fff",
-        "dark-accent-200":"#e1ffff",
+        // This is wonky
+        "dark-accent-200":"#610fff",
         "dark-text-100":"#FFFFFF",
         "dark-text-200":"#9e9e9e",
         "dark-bg-100":"#1E1E1E",

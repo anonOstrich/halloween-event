@@ -19,11 +19,9 @@ export default async function Review({ movieId }: { movieId: number }) {
 
     if (existingReview == null) {
         // TODO: Review on this site? Or give a rating?
-        return <div className="rounded-md py-5 px-3 bg-teal-600 flex flex-col gap-4">
-            <p>You have not reviewed the movie yet</p>
-            <Link href={`/movies/${movieId}/review`} className="block text-center py-3 bg-black shadow-sm transition-colors rounded-sm
-            hover:bg-white hover:text-black
-            hover:shadow-lg">
+        return <div className="rounded-md py-5 px-3 flex flex-col gap-4 bg-accent-200 dark:bg-dark-accent-200">
+            <p className="prose">You have not reviewed the movie yet</p>
+            <Link href={`/movies/${movieId}/review`} className="block btn">
                 Review?
             </Link>
         </div>
@@ -36,13 +34,13 @@ export default async function Review({ movieId }: { movieId: number }) {
     } = existingReview
 
     // TODO: 
-    return (<div className="rounded-md py-5 px-3 bg-teal-600 flex flex-col gap-4">
-        <h3>Your review:</h3>
-        {reviewText && (<p className="block bg-gray-300 p-4 font-sans text-md text-gray-700">{reviewText}</p>)}
-        <span className="text-lg">
+    return (<div className="rounded-md py-5 px-3 flex flex-col gap-4 prose dark:prose-invert">
+        <h3 className="prose-h3">Your review:</h3>
+        {reviewText && (<p className="block p-4 prose-blockquote   bg-bg-200  dark:bg-dark-bg-200 border-2 shadow-md">{reviewText}</p>)}
+        <span className="prose prose-lg">
             Score: {score} / 19
         </span>
 
-        <Link href={`/movies/${movieId}/review`} className="block text-center py-3 text-sm bg-teal-700 rounded-md hover:text-teal-700 hover:bg-white hover:border-teal-700 hover:shadow-lg transition-all">Update review</Link>
+        <Link href={`/movies/${movieId}/review`} className="block  btn not-prose">Update review</Link>
     </div>)
 }

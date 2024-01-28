@@ -36,7 +36,7 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
 
     const id = useId()
 
-    const debouncedTest = debounce(async (inputValue: string): Promise<Array<{value: number, label: string}>> => {
+    const debouncedTest = debounce(async (inputValue: string): Promise<Array<{ value: number, label: string }>> => {
         if (inputValue.trim().length <= 0) {
             return initialMovieOptions.map(m => ({
                 label: m.title,
@@ -45,9 +45,9 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
         }
         const movies = await searchForMovieFromDatabase(inputValue)
         return movies.map(m => ({
-            value: m.id, 
+            value: m.id,
             label: m.title
-        }))      
+        }))
 
     }, 1000)
 
@@ -58,12 +58,12 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
         <form action={handleMovieAdding}>
             <input type="hidden" name="event-id" id="event-id" value={eventId} />
 
-        {
-            // TODO: 
-            // Are the  movies in alphabetical order? 
-        }
+            {
+                // TODO: 
+                // Are the  movies in alphabetical order? 
+            }
 
-            <br/>
+            <br />
             <div>
                 <h4>Add movie(s)</h4>
                 <AsyncSelect
@@ -77,7 +77,8 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
                 />
             </div>
 
-            <button type="submit" className="p-4 border-2 border-white rounded-md">Add movie</button>
+            <button type="submit" className="p-4 border-2 
+             rounded-md">Add movie</button>
         </form>
     </div>
 }
