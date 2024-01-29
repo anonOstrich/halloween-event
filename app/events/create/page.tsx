@@ -20,7 +20,7 @@ export default async function CreateEventPage() {
 
 
     return <div>
-        <h1 className="text-center">Create New Event</h1>
+        <h1 className="text-center prose dark:prose-invert prose-2xl">Create New Event</h1>
 
         <form action={handleSubmit} className="form">
             <FormRow displayValue="Title" separateDisplayValue name="event-title" type="text" defaultValue="" />

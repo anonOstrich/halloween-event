@@ -37,7 +37,7 @@ export async function VotingOption({ votes, movie, movieEventId }: VotingOptionP
     const givenVote = votes.find(v => v.userId === userId)
 
 
-    return <div className="bg-primary-100 p-5 space-y-4 text-center rounded">
+    return <div className="bg-primary-100 dark:bg-dark-primary-100 p-5 space-y-4 text-center rounded">
         <h6 className="text-lg underline"><Link href={`/movies/${movie.id}`}>{movie.title}</Link></h6>
         {
             <VotingWidget

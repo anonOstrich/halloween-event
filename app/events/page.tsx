@@ -10,12 +10,8 @@ export default async function EventsPage() {
 
     return (
         <div className="flex flex-col items-center gap-2">
-            <h1>Events Page</h1>
-            <Link href={'/events/create'}>
-                <div className="p-5 bg-slate-400 rounded-md hover:bg-slate-800 border-2 border-transparent hover:border-white ">
-                    Create New Event
-                </div>
-            </Link>
+            <h1 className="prose dark:prose-invert prose-2xl">Events</h1>
+
 
             <ul className="flex flex-col gap-4 items-stretch">
                 {
@@ -24,6 +20,10 @@ export default async function EventsPage() {
                     </li>))
                 }
             </ul>
+
+            <Link href={'/events/create'}>
+                <button className="btn">Create New Event</button>
+            </Link>
         </div>
     )
 }

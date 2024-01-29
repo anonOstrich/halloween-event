@@ -26,7 +26,7 @@
   
   .form input, .form textarea {
 
-    @apply p-2 text-inherit border bg-red-400 dark:bg-dark-bg-300
+    @apply p-2 text-inherit border bg-bg-300 dark:bg-dark-bg-300
 
 
   }
