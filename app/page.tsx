@@ -1,8 +1,8 @@
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-3xl flex flex-col gap-3">
-      <h1 className="text-orange-600 text-center">Cool People Movie Club Page</h1>
+    <main className="mx-auto flex flex-col gap-3 prose dark:prose-invert">
+      <h1 className="text-orange-600 text-center text-secondary prose-3xl font-semibold">Cool People Movie Club Page</h1>
       <p>
         This a page for planning and reviewing movie watching sessions. At first meant just for my private friend group, but the ability to set up events for different groups might be  in the future. As of now, you need to ask the maintainer of the page for help with creating the account. If you know, you know ;)
       </p>

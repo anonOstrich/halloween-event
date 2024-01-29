@@ -3,6 +3,7 @@
 import { getMoviesFromExternalAPI } from "@/utils/api"
 import { Movie } from "@/utils/types"
 import debounce from "debounce-promise"
+import { useEffect, useState } from "react"
 import AsyncSelect from "react-select/async"
 
 const TIMEOUT_DELAY_IN_MS = 500
@@ -12,6 +13,18 @@ interface MovieApiSearchProps {
 }
 
 export default function MovieApiSearch({ completeMovieInformationCallBack }: MovieApiSearchProps) {
+
+    const [darkModeEnabled, setDarkModeEnabled] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+    useEffect(() => {
+        const callback = (e: MediaQueryListEvent) => {
+            setDarkModeEnabled(e.matches)
+        }
+        const id = window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
+        }
+    }, [])
 
     function fillInMovieInformation(movie: Movie | null) {
         if (movie == null) return;
@@ -38,9 +51,36 @@ export default function MovieApiSearch({ completeMovieInformationCallBack }: Mov
             loadOptions={loadOptions}
             isSearchable
             isClearable
-            className="text-black"
+            className="bg-bg-300 dark:bg-dark-bg-300"
             onChange={(e) => { fillInMovieInformation(e?.value ?? null) }}
             placeholder="Search for a movie by title"
+            theme={(theme) => ({
+                ...theme,
+                colors: {
+                    ...theme.colors,
+                    // N.B.! these are manually set to the same values as in the tailwind config!
+                    primary25: darkModeEnabled ? "#610fff" : '#ffd299',
+                }
+            })}
+            styles={{
+                control: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: 'inherit',
+                }),
+                menu: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: 'inherit',
+                }),
+                input: (baseStyles, state) => ({
+                    ...baseStyles,
+                    backgroundColor: 'inherit',
+                    color: 'inherit',
+                }),
+                singleValue: (baseStyles, state) => ({
+                    ...baseStyles,
+                    color: 'inherit',
+                }),
+            }}
         />
     </div>)
 

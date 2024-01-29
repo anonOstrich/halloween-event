@@ -23,12 +23,12 @@ export default function RootLayout({
     // NOTE: What's wrapped by clerkprovider cannot be build-time rendered. See the clerk documentation for alternatives, if you want SSG for some pages
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={inter.className + " bg-bg-100 dark:bg-dark-bg-100 text-text-100 dark:text-dark-text-100"}>
           <NavBar />
           <main className='max-w-4xl m-auto mt-4'>
             {children}
           </main>
-          <ToastContainer pauseOnHover={false} theme='dark' />
+          <ToastContainer pauseOnHover={false} />
         </body>
 
       </html>

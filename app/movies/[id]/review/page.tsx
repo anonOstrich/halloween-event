@@ -65,7 +65,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
 
     return (
         <section>
-            <h1 className="text-center">{movie.title}</h1>
+            <h1 className="text-center prose dark:prose-invert prose-2xl">{movie.title}</h1>
             <form action={handleReviewSubmission} className="form">
                 <input type="hidden" name="movie-id" id='movie-id' value={movie.id} />
 
@@ -76,7 +76,7 @@ export default async function ReviewPage({ params }: { params: { id: string } })
                 </div>
 
                 <div className="w-full flex justify-center items-center gap-5">
-                    <button type="submit" className="mt-0" >{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
+                    <button type="submit" className="" >{possibleExistingReview == null ? 'Review' : 'Update review'}</button>
                     {
                         possibleExistingReview == null ? (<Link className="block" href={`/movies/${movie.id}`}>Cancel</Link>) : (<form action={handleReviewDeletion}>
                             <input type="hidden" name="movie-id" value={movie.id} />
