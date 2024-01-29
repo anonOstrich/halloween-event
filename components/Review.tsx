@@ -20,7 +20,7 @@ export default async function Review({ movieId }: { movieId: number }) {
     if (existingReview == null) {
         // TODO: Review on this site? Or give a rating?
         return <div className="rounded-md py-5 px-3 flex flex-col gap-4 bg-accent-200 dark:bg-dark-accent-200">
-            <p className="prose">You have not reviewed the movie yet</p>
+            <p className="prose dark:prose-invert">You have not reviewed the movie yet</p>
             <Link href={`/movies/${movieId}/review`} className="block btn">
                 Review?
             </Link>
