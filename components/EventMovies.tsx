@@ -21,7 +21,7 @@ export async function EventMovies({ eventId }: { eventId: number }) {
 
     return (<div>
         <h2>The movies you can vote for</h2>
-        <ul className="space space-y-2">
+        <ul className="space-y-2">
             {
                 voteOptions.map(voteOption => (<li key={voteOption.id}>
                     <VotingOption movieEventId={voteOption.id} votes={voteOption.votes} movie={voteOption.movie} />
