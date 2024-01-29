@@ -77,9 +77,9 @@ export default async function ReviewSummary(props: { movie: Movie }) {
     const displayAll = _count.score! <= 4
 
 
-    return <section className="px-5 py-5 flex flex-col items-center border-2 border-gray-900 rounder-lg gap-5">
-        <h2>Summary of reviews</h2>
-        <span className="text-base">Average rating: {averageFormatted}</span>
+    return <section className="px-5 py-5 flex flex-col items-center rounder-lg gap-5 bg-primary-100 dark:bg-dark-primary-100 shadow-md rounded">
+        <h2 className="prose dark:prose-invert prose-2xl">Summary of reviews</h2>
+        <span className="prose dark:prose-invert prose-lg">Average rating: {averageFormatted}</span>
         <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {
                 (displayAll ? formattedReviews : formattedReviews.slice(0, 4)).map(review => (<li key={review.reviewer}><SingleReviewSummary review={review} /></li>))
@@ -102,12 +102,12 @@ function SingleReviewSummary({ review }: { review: FormattedReview }) {
         review.text.length > 153 ? review.text.substring(0, 150) + "..." : review.text
     )
 
-    return <div className="border-2 border-gray-700 px-3 py-2 flex flex-col gap-5">
+    return <div className="px-3 py-2 flex flex-col gap-5 border-2 border-bg-300 dark:border-dark-bg-300 rounded">
         <div className="text-lg">
             <span>{review.score} / 19</span>
             {
                 review.text != null && (
-                    <p>
+                    <p className="prose dark:prose-invert prose-sm">
                         {formattedText}
                     </p>
                 )

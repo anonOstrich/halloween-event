@@ -39,19 +39,27 @@ export default async function MovieEditPage({ params }: { params: { id: string }
     })
 
     return <main>
-        <h3>Edit {movie.title}</h3>
-        <form action={serverHandleMovieEditSubmit}>
+        <h1 className="prose dark:prose-invert prose-2xl">{movie.title}</h1>
+
+
+        <form action={serverHandleMovieEditSubmit} className="form prose dark:prose-invert">
             <input type="hidden" name="movie-id" value={movie.id} />
-            <FormRow displayValue="Title" name="movie-title" type="text" separateDisplayValue defaultValue={movie.title} />
 
-            <FormRow defaultValue={movie.year} displayValue="Release year" separateDisplayValue name="movie-year" type="number" />
+            <FormRow displayValue="Title" separateDisplayValue name="movie-title" type="text" defaultValue={movie.title} />
+            <FormRow displayValue="Year" separateDisplayValue name="movie-year" type="number" defaultValue={movie.year}
+            />
+
+            <FormRow displayValue="Description" separateDisplayValue name="movie-description" type="textarea" defaultValue={movie.description} />
 
 
-            <FormRow defaultValue={movie.description} displayValue="Description" separateDisplayValue name="movie-description" type="textarea" />
+            <div className="mx-auto space-x-8 not-prose">
+                <button type="submit">Save</button>
+                <Link href={`/movies/${movie.id}`} ><button>Cancel</button></Link>
+            </div>
 
-            <button type="submit">Save</button>
         </form>
-        <Link href={`/movies/${movie.id}`}>Cancel</Link>
+
+
     </main>
 }
 

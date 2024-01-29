@@ -14,7 +14,7 @@ export default async function Movies() {
     </ul>
 
     return <section className="m-auto max-w-4xl flex flex-col items-center justify-between gap-5">
-        <Link href="/movies/add-movie" className="border-2 border-white p-5 rounded-md hover:bg-gray-700">Add a new movie 🎞️</Link>
+        <Link href="/movies/add-movie"><button className="btn">Add a new movie 🎞️</button></Link>
         {moviesComponent}
     </section>
 }

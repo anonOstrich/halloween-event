@@ -41,11 +41,17 @@ export default function AddMoviePage() {
     const currentYear = (new Date()).getFullYear()
 
 
-    return <div>
+    return <div className="space-y-4">
+
+        <h1 className="prose dark:prose-invert prose-2xl">Add a new movie option to choose for events</h1>
+
+        <p className="prose dark:prose-invert prose-md">
+            You can search for the movie by its title to automatically fill in the form, or add the details manually.
+        </p>
 
         <MovieApiSearch completeMovieInformationCallBack={fillFormWithMovieDetails} />
 
-        <form onSubmit={handleFormSubmission} className="form">
+        <form onSubmit={handleFormSubmission} className="form prose dark:prose-invert">
             <FormRow displayValue="Title" separateDisplayValue name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             <FormRow displayValue="Year" separateDisplayValue name="year" type="number"
                 //min={1880} max={currentYear}

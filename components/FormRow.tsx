@@ -40,7 +40,7 @@ export default function FormRow(props: FormRowProps) {
 
 
     const inputElement = props.type === 'textarea' ?
-        <textarea id={props.name} name={props.name} {...optionalProps} />
+        <textarea id={props.name} name={props.name} {...optionalProps} rows={6} />
         : <input type={props.type} name={props.name} id={props.name} {...optionalProps} />;
 
     return <div className="w-full grid grid-cols-1 md:grid-cols-[200px_1fr]">

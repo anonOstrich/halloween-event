@@ -2,7 +2,7 @@
 
 import { addMoviesToEventClient, searchForMovieFromDatabase } from "@/utils/api";
 import { Movie } from "@prisma/client"
-import { useId } from "react"
+import { useEffect, useState } from "react"
 import AsyncSelect from 'react-select/async';
 
 import debounce from 'debounce-promise'
@@ -19,6 +19,18 @@ interface EventMovieAdderProps {
 export function EventMovieAdder(props: EventMovieAdderProps) {
     const router = useRouter()
 
+    const [darkModeEnabled, setDarkModeEnabled] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+    useEffect(() => {
+        const callback = (e: MediaQueryListEvent) => {
+            setDarkModeEnabled(e.matches)
+        }
+        const id = window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
+        }
+    }, [])
+
     const { eventId, initialMovieOptions } = props
 
 
@@ -34,9 +46,7 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
         }
     }
 
-    const id = useId()
-
-    const debouncedTest = debounce(async (inputValue: string): Promise<Array<{value: number, label: string}>> => {
+    const debouncedTest = debounce(async (inputValue: string): Promise<Array<{ value: number, label: string }>> => {
         if (inputValue.trim().length <= 0) {
             return initialMovieOptions.map(m => ({
                 label: m.title,
@@ -45,31 +55,51 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
         }
         const movies = await searchForMovieFromDatabase(inputValue)
         return movies.map(m => ({
-            value: m.id, 
+            value: m.id,
             label: m.title
-        }))      
+        }))
 
     }, 1000)
 
     const loadOptions = debouncedTest
 
-    return <div>
-        <h2>Add a movie to the event</h2>
-        <form action={handleMovieAdding}>
+
+
+    return <div className="mt-8 space-y-4 bg-bg-200 dark:bg-dark-bg-200 p-4 rounded">
+        <h2 className="prose dark:prose-invert prose-2xl">Add a new movie</h2>
+        <form action={handleMovieAdding} className="space-y-4">
             <input type="hidden" name="event-id" id="event-id" value={eventId} />
 
-        {
-            // TODO: 
-            // Are the  movies in alphabetical order? 
-        }
+            {
+                // TODO: 
+                // Are the  movies in alphabetical order? 
+            }
 
-            <br/>
+
             <div>
-                <h4>Add movie(s)</h4>
+                <label htmlFor="event-movies" className="text-lg">Add movie(s)</label>
                 <AsyncSelect
                     name="event-movies"
                     id="event-movies"
-                    className="text-black"
+                    className="bg-bg-300 dark:bg-dark-bg-300"
+                    theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            // N.B.! these are manually set to the same values as in the tailwind config!
+                            primary25: darkModeEnabled ? "#610fff" : '#ffd299',
+                        }
+                    })}
+                    styles={{
+                        control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            backgroundColor: 'inherit',
+                        }),
+                        menu: (baseStyles, state) => ({
+                            ...baseStyles,
+                            backgroundColor: 'inherit',
+                        }),
+                    }}
                     isMulti
                     cacheOptions
                     defaultOptions
@@ -77,7 +107,7 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
                 />
             </div>
 
-            <button type="submit" className="p-4 border-2 border-white rounded-md">Add movie</button>
+            <button type="submit" className="btn">Add movie</button>
         </form>
     </div>
 }

@@ -8,7 +8,7 @@ import Link from "next/link"
 
 
 
-export default async function EventPage({params}: {params: {id: string}}) {
+export default async function EventPage({ params }: { params: { id: string } }) {
     const { id } = params
 
     const event = await prisma.event.findFirst({
@@ -24,14 +24,13 @@ export default async function EventPage({params}: {params: {id: string}}) {
     const isPakotus = event.movieClubEvent
 
 
-    return <main className="flex flex-col justify-center items-center gap-3">
-        <h1>Event Page</h1>
-        <h2>{event.title} {isPakotus && (<span className="uppercase text-amber-200">pakotus</span>)}</h2>
-        <h3>Theme: {event.theme}</h3>
+    return <main className="justify-center items-start gap-3 space-y-4">
+        <h1 className="prose dark:prose-invert prose-2xl text-center">{event.title} {isPakotus && (<span className="uppercase">pakotus</span>)}</h1>
+        <h2 className="prose dark:prose-invert prose-xl">Theme: {event.theme}</h2>
         <div>
-            <h4 className="text-center">Description</h4>
+            <h4>Description</h4>
             <p>
-                { event.description }
+                {event.description}
             </p>
         </div>
 
