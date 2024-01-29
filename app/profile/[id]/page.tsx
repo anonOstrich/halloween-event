@@ -124,7 +124,7 @@ function ReviewComponent({ movie, review }: { movie: Movie, review: Review }) {
         {
             review.reviewText != null && review.reviewText.trim().length > 0 && textReviewEl
         }
-
+        <Link className="btn border-4 border-accent-100 dark:border-dark-accent-100 hover:bg-accent-100 hover:dark:bg-dark-accent-100" href={`/movies/${movie.id}/review`}>Update review</Link>
 
     </section>
 }
