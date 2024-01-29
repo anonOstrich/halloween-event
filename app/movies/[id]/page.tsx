@@ -32,10 +32,10 @@ export default async function MoviePage({ params }: { params: { id: string, } })
     return <main className="flex flex-col justify-between max-w-2xl mx-auto gap-10">
 
 
-        <article className="bg-gray-700 px-5 py-5 rounded-md flex flex-col gap-5 relative">
+        <article className="px-5 py-5 rounded-md flex flex-col gap-5 relative">
 
             <div className="flex justify-between items-center">
-                <h2>{movie.title}</h2>
+                <h1 className="prose dark:prose-invert prose-2xl">{movie.title}</h1>
                 {
                     userAllowedToModify && (<div className="flex items-center">
                         <DeleteMovieComponent movieId={movie.id} />
@@ -70,10 +70,10 @@ interface DeleteMovieComponentProps {
 
 // This needs to consider cursor on the whole
 function DeleteMovieComponent({ movieId }: DeleteMovieComponentProps) {
-    return <div className="mx-5 my-5 bg-red-800 rounded-full min-w-[50px] min-h-[50px] flex justify-center align-middle shadow-lg shadow-gray-800">
+    return <div className="mx-5 my-5 bg-danger dark:bg-dark-danger rounded-full min-w-[50px] min-h-[50px] flex justify-center align-middle shadow-lg">
         <form action={handleDeletion} className="flex justify-center align-middle">
             <input type="hidden" name="movie-id" value={movieId} />
-            <button className="" type="submit">X</button>
+            <button className="text-lg" type="submit">X</button>
         </form>
     </div>
 }
@@ -87,5 +87,5 @@ function UpdateMovieComponent({ movie }: UpdateMovieComponentProps) {
     const { title, id } = movie
 
     // Relate to the position of the delete button: maybe they should be in the same container, even?
-    return (<Link href={`/movies/${id}/edit`} className=" block border-2 border-black px-2 bg-gray-800 rounded-md shadow-md">Update</Link>)
+    return (<Link href={`/movies/${id}/edit`} className=" block border-2 bg-accent-100 dark:bg-dark-accent-100 py-1 px-2 rounded-md shadow-md">Update</Link>)
 }

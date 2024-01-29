@@ -28,6 +28,7 @@ const config: Config = {
         "dark-bg-100":"#1E1E1E",
         "dark-bg-200":"#2d2d2d",
         "dark-bg-300":"#454545",
+        "dark-danger": "#770000",
         "primary-100":"#FF7F50",
         "primary-200" :"#dd6236",
         "primary-300": "#8f1e00",
@@ -38,6 +39,7 @@ const config: Config = {
         "bg-100":"#F7EEDD",
         "bg-200":"#ede4d3",
         "bg-300":"#c4bcab",
+          "danger": "#ee0000",
       }
     },
   },

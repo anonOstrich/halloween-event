@@ -26,13 +26,13 @@
   
   .form input, .form textarea {
 
-    @apply p-2 text-inherit border bg-bg-300 dark:bg-dark-bg-300
+    @apply p-2 text-inherit border bg-bg-300 bg-opacity-90 dark:bg-dark-bg-300
 
 
   }
   
   .form button {
-    @apply mt-4 border-2 border-primary-100 py-2 px-4 rounded transition-all hover:text-bg-100 hover:bg-primary-100 
+    @apply mt-4 border-2 border-primary-100 dark:border-dark-primary-100 py-2 px-4 rounded transition-all hover:text-bg-100 hover:text-dark-bg-100 hover:bg-primary-100 hover:bg-dark-primary-100
   }
 
 }
