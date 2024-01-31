@@ -1,6 +1,7 @@
 'use client'
 
 import { getMoviesFromExternalAPI } from "@/utils/api"
+import { useDarkThemeIsPreferred } from "@/utils/hooks"
 import { Movie } from "@/utils/types"
 import debounce from "debounce-promise"
 import { useEffect, useState } from "react"
@@ -14,17 +15,7 @@ interface MovieApiSearchProps {
 
 export default function MovieApiSearch({ completeMovieInformationCallBack }: MovieApiSearchProps) {
 
-    const [darkModeEnabled, setDarkModeEnabled] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
-
-    useEffect(() => {
-        const callback = (e: MediaQueryListEvent) => {
-            setDarkModeEnabled(e.matches)
-        }
-        const id = window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
-        return () => {
-            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
-        }
-    }, [])
+    const darkModeEnabled = useDarkThemeIsPreferred()
 
     function fillInMovieInformation(movie: Movie | null) {
         if (movie == null) return;

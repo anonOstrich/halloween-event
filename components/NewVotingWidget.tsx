@@ -8,6 +8,7 @@ import tailwindConfig from '@/tailwind.config'
 import { Vote, VoteType } from "@prisma/client"
 import { useState } from "react"
 import { voteForEventMovie } from '@/utils/api'
+import { useDarkThemeIsPreferred } from '@/utils/hooks'
 
 
 const fullConfig = resolveConfig(tailwindConfig)
@@ -29,12 +30,7 @@ const voteSymbols: Map<VoteType, string> = new Map([
     ["NEGATIVE", "-1"]
 ])
 
-// TODO: figure out whether dark mode is on. Create a dark mode hook for the client
-const voteColors: Map<VoteType, string> = new Map([
-    ["POSITIVE", (fullConfig.theme?.colors!)["dark-success"].toString() ?? "yellow"],
-    ["NEUTRAL", "current"],
-    ["NEGATIVE", (fullConfig.theme?.colors!)["dark-danger"].toString() ?? "yellow"]
-])
+
 
 //TODO: must also work for non-hoverers (mobile, keyboard users)
 // Size set by parent
@@ -43,6 +39,8 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
+
+
 
 
     const hasVoted = vote != null && vote !== "NONVOTE"
@@ -102,6 +100,19 @@ type VoteSymbolProps = {
 }
 
 function VoteSymbol(props: VoteSymbolProps) {
+
+    const darkThemeIsPreferred = useDarkThemeIsPreferred()
+
+
+    // TODO: figure out whether dark mode is on. Create a dark mode hook for the client
+    const voteColors: Map<VoteType, string> = new Map([
+        ["POSITIVE", (fullConfig.theme?.colors!)[darkThemeIsPreferred ? "dark-success" : "success"].toString() ?? "yellow"],
+        ["NEUTRAL", "current"],
+        ["NEGATIVE", (fullConfig.theme?.colors!)[darkThemeIsPreferred ? "dark-danger" : "danger"].toString() ?? "yellow"]
+    ])
+
+
+
     const symbol = voteSymbols.get(props.voteType)
     return <div className="h-full w-full flex justify-center items-center" style={{
         backgroundColor: voteColors.get(props.voteType)
