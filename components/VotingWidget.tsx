@@ -56,7 +56,7 @@ export default function VotingWidget(props: VotingWidgetProps) {
     const movieEventId = props.movieEventId
 
 
-    return (<div className="flex gap-5 items-center">
+    return (<div className="flex gap-5 items-center bg-red-200/50">
         <VoteWidget movieEventId={movieEventId} label="Positive" nofVotes={posVotes} matchesOwnVote={ownVote === 'POSITIVE'} voteType="POSITIVE" updateVoteCount={updateVoteCount} />
         <VoteWidget movieEventId={movieEventId} label="Neutral" nofVotes={neutralVotes} matchesOwnVote={ownVote === 'NEUTRAL'} voteType="NEUTRAL" updateVoteCount={updateVoteCount} />
         <VoteWidget movieEventId={movieEventId} label="Negative" nofVotes={negVotes} matchesOwnVote={ownVote === 'NEGATIVE'} voteType="NEGATIVE" updateVoteCount={updateVoteCount} />
