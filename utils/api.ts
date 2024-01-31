@@ -28,6 +28,7 @@ export async function addNewMovie(title: string, year: number, description: stri
 }
 
 
+
 // Really this is toggling!
 export async function voteForEventMovie(movieEventId: number, voteType: VoteType): Promise<Vote> {
 
