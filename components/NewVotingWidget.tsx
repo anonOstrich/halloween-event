@@ -1,6 +1,6 @@
 'use client'
 
-//N.B. This has some performance impact
+// N.B. This has some performance impact
 // https://tailwindcss.com/docs/configuration#referencing-in-java-script
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
@@ -62,26 +62,54 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     }
 
+    function focusTester() {
+        console.log("focus tester fired")
+
+    }
+
+    function blurTester() {
+        console.log("blur tester fired")
+    }
+
     return <div className="
     h-full w-full 
     flex items-stretch justify-center
     ">
-        <div className="group w-[33.333%] hover:w-full h-full border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer 
-        bg-gray-500 bg-opacity-100 hover:bg-opacity-0 transition-all ">
+        <div className="group w-[33.333%]  h-full border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer
+        bg-gray-500 bg-opacity-100
+        transition-all
+        hover:bg-opacity-0 hover:w-full 
+        focus:bg-opacity-0 focus:w-full
+        "
+            tabIndex={0}
+            onFocus={focusTester}
+            onBlur={blurTester}
+        >
             {
-                hasVoted ? <span className="text-sm block group-hover:hidden">Voted</span> : <span className="text-sm block group-hover:hidden ">Vote</span>
+                hasVoted ? <span className="text-sm block group-hover:hidden
+                group-focus:hidden">Voted</span> : <span className="text-sm block
+                group-hover:hidden
+                group-focus:hidden">Vote</span>
             }
-            <div className="hidden group-hover:block bg-red-500 w-full h-full" style={{
-                display: loading ? "none" : "inherit"
-            }}>
-                <ul className="flex bg-blue-500 group-hover:w-full items-stretch justify-between divide-x-4 h-full">
+
+            <div className="hidden
+            group-hover:block
+            group-focus:block
+            w-full h-full" style={{
+                    display: loading ? "none" : "inherit"
+                }}>
+                <ul className="flex bg-blue-500
+                group-hover:w-full
+                group-focus:w-full
+                items-stretch justify-between divide-x-4 h-full" >
                     {
                         voteOptions.map((option, idx) => {
                             return <li className="w-[33%]"
                                 // Todo: how to stylize the differenet options?
                                 style={{
                                     fontSize: vote === option ? "200%" : "inherit"
-                                }} key={option}><VoteSymbol callback={voteToggler(option)}
+                                }} key={option} tabIndex={-1}>
+                                <VoteSymbol callback={voteToggler(option)}
                                     voteType={option}
                                 /></li>
                         })
