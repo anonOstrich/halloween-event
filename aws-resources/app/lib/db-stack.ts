@@ -20,10 +20,10 @@ export class DBStack extends cdk.Stack {
 
     // The code that defines your stack goes here
 
-    // If exists, could also be imported somehow
-    const vpc = new ec2.Vpc(this, 'VPC', {
-      vpcName: stagedName("PostgresVPC"),
-    });
+
+    const vpc = ec2.Vpc.fromLookup(this, "VPC", {
+      isDefault: true
+    })
 
     const securityGroup = new ec2.SecurityGroup(this, "AppOpenSecurityGroup", {
       vpc: vpc,
