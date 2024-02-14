@@ -6,7 +6,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 
 import { Vote, VoteType } from "@prisma/client"
-import { useState } from "react"
+import { KeyboardEventHandler, useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent } from "react"
 import { voteForEventMovie } from '@/utils/api'
 import { useDarkThemeIsPreferred } from '@/utils/hooks'
 
@@ -39,6 +39,10 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
+    const [focusIdx, setFocusIdx] = useState(1)
+    // const focusRef = useRef<HTMLLIElement>(null)
+    const listRef = useRef<HTMLUListElement>(null)
+    const [optionsOpen, setIsOptionsOpen] = useState(true)
 
 
 
@@ -47,7 +51,6 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     async function sendVote(option: VoteType) {
         const result = await voteForEventMovie(props.movieEventId, option)
-        console.log(result)
         setVote(result.voteType)
         setLoading(false)
     }
@@ -62,8 +65,47 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     }
 
-    function focusTester() {
-        console.log("focus tester fired")
+    function innerKeyboardListener(e: ReactKeyboardEvent<HTMLLIElement>) {
+        const idx = focusIdx
+        let newIdx = -1
+        switch (e.key) {
+
+            case "ArrowLeft":
+                e.preventDefault()
+                newIdx = (idx - 1)
+                if (newIdx < 0) {
+                    newIdx = 2
+                }
+                break;
+            case "ArrowRight":
+                e.preventDefault()
+                newIdx = idx + 1
+                if (newIdx > 2) {
+                    newIdx = 0
+                }
+                break;
+            default:
+                return;
+        }
+        const focusEl = listRef.current?.children[idx] as HTMLLIElement
+
+        focusEl.blur()
+        //@ts-ignore
+        listRef.current?.children[newIdx].focus({ preventScroll: true })
+
+
+
+        setFocusIdx(_ => newIdx)
+
+    }
+
+    function focusTester(e: ReactFocusEvent<HTMLDivElement>) {
+        //@ts-ignore
+        const listIsTargetOfFocus = e.target?.classList.contains("group")
+        if (listIsTargetOfFocus) {
+            const focusEl = listRef.current?.children[focusIdx] as HTMLLIElement
+            focusEl.focus()
+        }
 
     }
 
@@ -75,48 +117,63 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
     h-full w-full 
     flex items-stretch justify-center
     ">
-        <div className="group w-[33.333%]  h-full border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer
+        <div className="group  h-full border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer
         bg-gray-500 bg-opacity-100
         transition-all
-        hover:bg-opacity-0 hover:w-full 
-        focus:bg-opacity-0 focus:w-full
+        hover:bg-opacity-0  
+        focus:bg-opacity-0
         "
+
+            style={{
+                width: optionsOpen ? "100%" : "33.333%",
+            }}
             tabIndex={0}
             onFocus={focusTester}
-            onBlur={blurTester}
+        // onBlur={blurTester}
         >
             {
-                hasVoted ? <span className="text-sm block group-hover:hidden
+                !optionsOpen && (
+                    hasVoted ? <span className="text-sm block group-hover:hidden
                 group-focus:hidden">Voted</span> : <span className="text-sm block
                 group-hover:hidden
-                group-focus:hidden">Vote</span>
+                group-focus:hidden">Vote</span>)
             }
 
-            <div className="hidden
-            group-hover:block
-            group-focus:block
+            {
+                optionsOpen && (
+                    <div className="
             w-full h-full" style={{
-                    display: loading ? "none" : "inherit"
-                }}>
-                <ul className="flex bg-blue-500
-                group-hover:w-full
-                group-focus:w-full
-                items-stretch justify-between divide-x-4 h-full" >
-                    {
-                        voteOptions.map((option, idx) => {
-                            return <li className="w-[33%]"
-                                // Todo: how to stylize the differenet options?
-                                style={{
-                                    fontSize: vote === option ? "200%" : "inherit"
-                                }} key={option} tabIndex={-1}>
-                                <VoteSymbol callback={voteToggler(option)}
-                                    voteType={option}
-                                /></li>
-                        })
-                    }
+                            display: loading ? "none" : "inherit",
+                        }}>
+                        <ul className="flex bg-blue-500
+                w-full
+                items-stretch justify-between divide-x-4 h-full"
+                            ref={listRef}
+                        >
+                            {
+                                voteOptions.map((option, idx) => {
+                                    return <li className="w-[33%]
+                                hover:border-8 hover:border-black
+                                focus:border-8 focus:border-black
+                            "
+                                        // Todo: how to stylize the differenet options?
+                                        style={{
+                                            fontSize: vote === option ? "200%" : "inherit"
+                                        }} key={option}
+                                        onKeyDown={innerKeyboardListener}
+                                        tabIndex={idx == focusIdx ? 0 : -1}
+                                    >
+                                        <VoteSymbol callback={voteToggler(option)}
+                                            voteType={option}
+                                        /></li>
+                                })
+                            }
 
-                </ul>
-            </div>
+                        </ul>
+                    </div>
+                )
+            }
+
         </div>
     </div>
 
