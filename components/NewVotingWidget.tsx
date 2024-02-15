@@ -33,10 +33,19 @@ const voteSymbols: Map<VoteType, string> = new Map([
 
 
 
-//TODO: must also work for non-hoverers (mobile, keyboard users)
 // Size set by parent
 export default function NewVotingWidget(props: VotingWidgetProps) {
 
+    // TODO: see if you can figure out the direction in this manner
+    /*
+    const parentEl = document.getElementById("intpar")
+    console.log('parent el: ',parentEl)
+    console.log('x: ', parentEl?.style.width)
+    console.log('y: ', parentEl?.style.height)
+    const direction = parentEl == null ? "column" :  parentEl?.style.width > parentEl?.style.height ? "row" : "column"
+    */
+
+    const direction = props.direction
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
@@ -124,8 +133,12 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
     return <div className="
     h-full w-full 
     flex items-stretch justify-center
-    ">
-        <div className="group  h-full border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer
+    "
+    style={{
+        flexDirection: direction == "row" ? "row" : "column"
+    }}
+    >
+        <div className="group  border-dashed border-2 border-black flex items-center justify-center  hover:cursor-pointer
         bg-gray-500 bg-opacity-100
         transition-all
         hover:bg-opacity-0  
@@ -133,7 +146,8 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
         "
 
             style={{
-                width: optionsOpen ? "100%" : "33.333%",
+                width: direction == "row" ?  (optionsOpen ? "100%" : "33.333%") : "100%",
+                height: direction == "column" ? (optionsOpen ? "100%" : "33.333%") : "100%",
             }}
             tabIndex={0}
             onFocus={focusTester}
@@ -159,19 +173,27 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
                 zIndex: optionsOpen ? 1 : -1
             }}>
                         <ul className="flex bg-blue-500
-                w-full
-                items-stretch justify-between divide-x-4 h-full"
+                w-full h-full
+                items-stretch
+                justify-between divide-x-4"
                             ref={listRef}
+                            style={{
+                                flexDirection: direction == "row" ? "row" : "column",
+                                width: "100%",
+                                height: "100%"
+                            }}
                         >
                             {
                                 voteOptions.map((option, idx) => {
-                                    return <li className="w-[33%]
+                                    return <li className="
                                 hover:border-8 hover:border-black
                                 focus:border-8 focus:border-black
                             "
                                         // Todo: how to stylize the differenet options?
                                         style={{
-                                            fontSize: vote === option ? "200%" : "inherit"
+                                            fontSize: vote === option ? "200%" : "inherit",
+                                            width: direction == "row" ? "33.333%" : "100%",
+                                            height: direction == "column" ? "33.333%" : "100%",
                                         }} key={option}
                                         onKeyDown={innerKeyboardListener}
                                         tabIndex={idx == focusIdx ? 0 : -1}

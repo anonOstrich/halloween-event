@@ -46,8 +46,8 @@ export async function VotingOption({ votes, movie, movieEventId }: VotingOptionP
             votes={{ posVotes, neutralVotes, negVotes }}
         />
 
-        <div className="h-16 w-48">
-            <NewVotingWidget direction="row" givenVote={givenVote} movieEventId={movieEventId} />
+        <div className="h-16 w-48" id="intpar">
+            <NewVotingWidget direction={"row"} givenVote={givenVote} movieEventId={movieEventId} />
         </div>
         </div>
 
