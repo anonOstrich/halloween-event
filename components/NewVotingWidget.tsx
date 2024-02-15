@@ -46,10 +46,11 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
     */
 
     const direction = props.direction
+    const firstFocused = props.givenVote == null ? 1 :  props.givenVote?.voteType == "POSITIVE" ? 0 : props.givenVote?.voteType == "NEUTRAL" ? 1 : 2
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
-    const [focusIdx, setFocusIdx] = useState(1)
+    const [focusIdx, setFocusIdx] = useState(firstFocused)
     const listRef = useRef<HTMLUListElement>(null)
     // const [optionsOpen, setIsOptionsOpen] = useState(false)
     const [focusOpen, setFocusOpen] = useState(false)
