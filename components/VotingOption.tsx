@@ -1,8 +1,8 @@
 import { getUserId } from "@/utils/auth"
 import { Movie, Vote } from "@prisma/client"
-import VotingWidget from "./VotingWidget"
+import VotingStatistics from "./VotingStatistics"
 import Link from "next/link"
-import NewVotingWidget from "./NewVotingWidget"
+import VotingWidget from "./VotingWidget"
 
 
 
@@ -42,12 +42,12 @@ export async function VotingOption({ votes, movie, movieEventId }: VotingOptionP
         <h4 className="text-xl underline"><Link href={`/movies/${movie.id}`}>{movie.title}</Link></h4>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <VotingWidget
+        <VotingStatistics
             votes={{ posVotes, neutralVotes, negVotes }}
         />
 
         <div className="h-16 w-48 md:h-48 md:w-16" id={`parent-${movieEventId}`}>
-            <NewVotingWidget givenVote={givenVote} movieEventId={movieEventId} />
+            <VotingWidget givenVote={givenVote} movieEventId={movieEventId} />
         </div>
         </div>
 
