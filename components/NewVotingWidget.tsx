@@ -9,6 +9,7 @@ import { Vote, VoteType } from "@prisma/client"
 import { useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent } from "react"
 import { voteForEventMovie } from '@/utils/api'
 import { useDarkThemeIsPreferred } from '@/utils/hooks'
+import { toast } from 'react-toastify'
 
 
 const fullConfig = resolveConfig(tailwindConfig)
@@ -40,12 +41,12 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
     const [focusIdx, setFocusIdx] = useState(1)
-    // const focusRef = useRef<HTMLLIElement>(null)
     const listRef = useRef<HTMLUListElement>(null)
-    const [optionsOpen, setIsOptionsOpen] = useState(true)
+    // const [optionsOpen, setIsOptionsOpen] = useState(false)
+    const [focusOpen, setFocusOpen] = useState(false)
+    const [hoverOpen, setHoverOpen] = useState(false)
 
-
-
+    const optionsOpen = focusOpen || hoverOpen
 
     const hasVoted = vote != null && vote !== "NONVOTE"
 
@@ -53,6 +54,7 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
         const result = await voteForEventMovie(props.movieEventId, option)
         setVote(result.voteType)
         setLoading(false)
+        toast.success("Vote changed")
     }
 
 
@@ -103,10 +105,19 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
         //@ts-ignore
         const listIsTargetOfFocus = e.target?.classList.contains("group")
         if (listIsTargetOfFocus) {
-            const focusEl = listRef.current?.children[focusIdx] as HTMLLIElement
-            focusEl.focus()
+            console.log('changing focus???')
+            const focusEl = listRef.current?.children[focusIdx] as HTMLLIElement | null
+            if (focusEl != null) {
+                focusEl.focus({preventScroll: true})
+            }
         }
+        setFocusOpen(true)
+        // setIsOptionsOpen(true)
+    }
 
+    function blurTester(e: ReactFocusEvent<HTMLDivElement>) {
+        setFocusOpen(false)
+        // setIsOptionsOpen(false)
     }
 
 
@@ -126,20 +137,27 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
             }}
             tabIndex={0}
             onFocus={focusTester}
-        // onBlur={blurTester}
+            onBlur={blurTester}
+            onMouseEnter={(e) => {setHoverOpen(true)}}
+            onMouseLeave={(e) => {setHoverOpen(false)}}
         >
             {
                 !optionsOpen && (
                     hasVoted ? <span className="text-sm block group-hover:hidden
-                group-focus:hidden">Voted</span> : <span className="text-sm block
+                group-focus:hidden text-center">Voted</span> : <span className="text-sm block
                 group-hover:hidden
-                group-focus:hidden">Vote</span>)
+                group-focus:hidden text-center">Vote</span>)
             }
 
             {
-                optionsOpen && (
+                 (
                     <div className="
-            w-full h-full">
+            w-full h-full" style={{
+                // For focusing on the voted element if the widgets gets focus
+                opacity: optionsOpen ? 1 : 0,
+                position: optionsOpen ? "relative" : "absolute",
+                zIndex: optionsOpen ? 1 : -1
+            }}>
                         <ul className="flex bg-blue-500
                 w-full
                 items-stretch justify-between divide-x-4 h-full"
