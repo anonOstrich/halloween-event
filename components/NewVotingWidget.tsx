@@ -6,7 +6,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 
 import { Vote, VoteType } from "@prisma/client"
-import { KeyboardEventHandler, useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent } from "react"
+import { useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent } from "react"
 import { voteForEventMovie } from '@/utils/api'
 import { useDarkThemeIsPreferred } from '@/utils/hooks'
 
@@ -59,6 +59,7 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
     function voteToggler(option: VoteType) {
 
         return () => {
+            if (loading) return;
             setLoading(true)
             sendVote(option)
         }
@@ -84,6 +85,9 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
                     newIdx = 0
                 }
                 break;
+            case "Enter":
+                voteToggler(voteOptions[idx])()
+                return;
             default:
                 return;
         }
@@ -92,11 +96,7 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
         focusEl.blur()
         //@ts-ignore
         listRef.current?.children[newIdx].focus({ preventScroll: true })
-
-
-
         setFocusIdx(_ => newIdx)
-
     }
 
     function focusTester(e: ReactFocusEvent<HTMLDivElement>) {
@@ -109,9 +109,6 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
 
     }
 
-    function blurTester() {
-        console.log("blur tester fired")
-    }
 
     return <div className="
     h-full w-full 
@@ -142,9 +139,7 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
             {
                 optionsOpen && (
                     <div className="
-            w-full h-full" style={{
-                            display: loading ? "none" : "inherit",
-                        }}>
+            w-full h-full">
                         <ul className="flex bg-blue-500
                 w-full
                 items-stretch justify-between divide-x-4 h-full"
@@ -201,7 +196,9 @@ function VoteSymbol(props: VoteSymbolProps) {
     const symbol = voteSymbols.get(props.voteType)
     return <div className="h-full w-full flex justify-center items-center" style={{
         backgroundColor: voteColors.get(props.voteType)
-    }} onClick={props.callback}>
+    }}
+    onClick={props.callback}
+    >
         {symbol}
     </div>
 }
