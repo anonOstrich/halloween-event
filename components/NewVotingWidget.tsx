@@ -6,7 +6,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '@/tailwind.config'
 
 import { Vote, VoteType } from "@prisma/client"
-import { useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent } from "react"
+import { useState, KeyboardEvent as ReactKeyboardEvent, useRef, FocusEvent as ReactFocusEvent, useEffect } from "react"
 import { voteForEventMovie } from '@/utils/api'
 import { useDarkThemeIsPreferred } from '@/utils/hooks'
 import { toast } from 'react-toastify'
@@ -18,7 +18,6 @@ const fullConfig = resolveConfig(tailwindConfig)
 type Direction = "row" | "column"
 
 interface VotingWidgetProps {
-    direction: Direction,
     givenVote: Vote | undefined
     movieEventId: number
 }
@@ -36,25 +35,29 @@ const voteSymbols: Map<VoteType, string> = new Map([
 // Size set by parent
 export default function NewVotingWidget(props: VotingWidgetProps) {
 
-    // TODO: see if you can figure out the direction in this manner
-    /*
-    const parentEl = document.getElementById("intpar")
-    console.log('parent el: ',parentEl)
-    console.log('x: ', parentEl?.style.width)
-    console.log('y: ', parentEl?.style.height)
-    const direction = parentEl == null ? "column" :  parentEl?.style.width > parentEl?.style.height ? "row" : "column"
-    */
-
-    const direction = props.direction
     const firstFocused = props.givenVote == null ? 1 :  props.givenVote?.voteType == "POSITIVE" ? 0 : props.givenVote?.voteType == "NEUTRAL" ? 1 : 2
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
     const [focusIdx, setFocusIdx] = useState(firstFocused)
     const listRef = useRef<HTMLUListElement>(null)
-    // const [optionsOpen, setIsOptionsOpen] = useState(false)
     const [focusOpen, setFocusOpen] = useState(false)
     const [hoverOpen, setHoverOpen] = useState(false)
+    const [displayRow, setDisplayRow] = useState<boolean>(true)
+
+    useEffect(() => {
+        function handleResize() {
+            const parent = document.getElementById(`parent-${props.movieEventId}`)
+            const widerThanTaller = parent?.clientWidth! > parent?.clientHeight!
+            setDisplayRow(widerThanTaller)
+        }
+        window.addEventListener('resize', handleResize)
+        handleResize()
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
+    const direction: Direction = displayRow ? "row" : "column"
+
 
     const optionsOpen = focusOpen || hoverOpen
 
@@ -176,12 +179,10 @@ export default function NewVotingWidget(props: VotingWidgetProps) {
                         <ul className="flex bg-blue-500
                 w-full h-full
                 items-stretch
-                justify-between divide-x-4"
+                justify-between divide-x-4 md:divide-x-0 md:divide-y-4"
                             ref={listRef}
                             style={{
                                 flexDirection: direction == "row" ? "row" : "column",
-                                width: "100%",
-                                height: "100%"
                             }}
                         >
                             {
@@ -225,7 +226,6 @@ function VoteSymbol(props: VoteSymbolProps) {
     const darkThemeIsPreferred = useDarkThemeIsPreferred()
 
 
-    // TODO: figure out whether dark mode is on. Create a dark mode hook for the client
     const voteColors: Map<VoteType, string> = new Map([
         ["POSITIVE", (fullConfig.theme?.colors!)[darkThemeIsPreferred ? "dark-success" : "success"].toString() ?? "yellow"],
         ["NEUTRAL", "current"],
