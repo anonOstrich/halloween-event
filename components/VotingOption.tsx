@@ -1,7 +1,10 @@
 import { getUserId } from "@/utils/auth"
 import { Movie, Vote } from "@prisma/client"
-import VotingWidget from "./VotingWidget"
+import VotingStatistics from "./VotingStatistics"
 import Link from "next/link"
+import VotingWidget from "./VotingWidget"
+import { useState } from "react"
+import { ClientVotingOption } from "./ClientVotingOption"
 
 
 
@@ -38,14 +41,10 @@ export async function VotingOption({ votes, movie, movieEventId }: VotingOptionP
 
 
     return <div className="bg-primary-100 dark:bg-dark-primary-100 p-5 space-y-4 text-center rounded">
-        <h6 className="text-lg underline"><Link href={`/movies/${movie.id}`}>{movie.title}</Link></h6>
-        {
-            <VotingWidget
-                ownVote={givenVote?.voteType ?? null}
-                votes={{ posVotes, neutralVotes, negVotes }}
-                movieEventId={movieEventId}
-            />
-        }
+        <h4 className="text-xl underline"><Link href={`/movies/${movie.id}`}>{movie.title}</Link></h4>
+
+        <ClientVotingOption posVotes={posVotes} neutralVotes={neutralVotes} negVotes={negVotes} givenVote={givenVote} movieEventId={movieEventId} />
 
     </div>
 }
+

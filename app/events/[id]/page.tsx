@@ -1,6 +1,6 @@
 import { EventMovieAdder } from "@/components/EventModieAdder"
 import { EventMovies } from "@/components/EventMovies"
-import VotingWidget from "@/components/VotingWidget"
+import VotingStatistics from "@/components/VotingStatistics"
 import { getUserId } from "@/utils/auth"
 import { prisma } from "@/utils/db"
 import { Movie, Vote } from "@prisma/client"
