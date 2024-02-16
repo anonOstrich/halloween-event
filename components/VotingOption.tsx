@@ -41,14 +41,14 @@ export async function VotingOption({ votes, movie, movieEventId }: VotingOptionP
     return <div className="bg-primary-100 dark:bg-dark-primary-100 p-5 space-y-4 text-center rounded">
         <h4 className="text-xl underline"><Link href={`/movies/${movie.id}`}>{movie.title}</Link></h4>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <VotingStatistics
-            votes={{ posVotes, neutralVotes, negVotes }}
-        />
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+            <VotingStatistics
+                votes={{ posVotes, neutralVotes, negVotes }}
+            />
 
-        <div className="h-16 w-48 md:h-48 md:w-16" id={`parent-${movieEventId}`}>
-            <VotingWidget givenVote={givenVote} movieEventId={movieEventId} />
-        </div>
+            <div className="h-16 w-48 md:h-48 md:w-16" id={`parent-${movieEventId}`}>
+                <VotingWidget givenVote={givenVote} movieEventId={movieEventId} />
+            </div>
         </div>
 
     </div>

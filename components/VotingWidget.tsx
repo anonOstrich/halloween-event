@@ -39,7 +39,7 @@ const voteSymbols: Map<VoteType, string> = new Map([
 export default function VotingWidget(props: VotingWidgetProps) {
 
 
-    const firstFocused = props.givenVote != null ?  (props.givenVote?.voteType == "POSITIVE" ? 0 : props.givenVote?.voteType == "NEUTRAL" ? 1 : 2) : 1
+    const firstFocused = props.givenVote != null ? (props.givenVote?.voteType == "POSITIVE" ? 0 : props.givenVote?.voteType == "NEUTRAL" ? 1 : 2) : 1
 
     const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
@@ -135,7 +135,7 @@ export default function VotingWidget(props: VotingWidgetProps) {
         if (listIsTargetOfFocus) {
             const focusEl = listRef.current?.children[focusIdx] as HTMLLIElement | null
             if (focusEl != null) {
-                focusEl.focus({preventScroll: true})
+                focusEl.focus({ preventScroll: true })
                 e.target.blur()
             }
         }
@@ -146,47 +146,14 @@ export default function VotingWidget(props: VotingWidgetProps) {
         setFocusOpen(false)
     }
 
+    function mouseEnterHandler() {
+        setHoverOpen(true)
+    }
 
-    const OpenedComponent = (
-        <div className="w-full h-full" 
-        style={{
-    // For focusing on the voted element if the widgets gets focus
-    opacity: optionsOpen ? 1 : 0,
-    position: optionsOpen ? "relative" : "absolute",
-    zIndex: optionsOpen ? 1 : -1
-}}>
-            <ul className="flex bg-blue-500
-    w-full h-full
-    items-stretch
-    justify-between divide-x-4 md:divide-x-0 md:divide-y-4"
-                ref={listRef}
-                style={{
-                    flexDirection: direction == "row" ? "row" : "column",
-                }}
-            >
-                {
-                    voteOptions.map((option, idx) => {
-                        return <li className="
-                    hover:border-8 hover:border-black
-                    focus:border-8 focus:border-black
-                "
-                            style={{
-                                fontSize: vote === option ? "200%" : "inherit",
-                                width: direction == "row" ? "33.333%" : "100%",
-                                height: direction == "column" ? "33.333%" : "100%",
-                            }} key={option}
-                            onKeyDown={navigationKeypressListener}
-                            tabIndex={idx == focusIdx ? 0 : -1}
-                        >
-                            <VoteSymbol callback={voteToggler(option)}
-                                voteType={option}
-                            /></li>
-                    })
-                }
+    function mouseLeaveHandler() {
+        setHoverOpen(false)
+    }
 
-            </ul>
-        </div>
-    )
 
 
     return <div className="h-full w-full flex items-stretch justify-center"
@@ -200,14 +167,14 @@ export default function VotingWidget(props: VotingWidgetProps) {
         focus:bg-opacity-0
         "
             style={{
-                width: direction == "row" ?  (optionsOpen ? "100%" : "33.333%") : "100%",
+                width: direction == "row" ? (optionsOpen ? "100%" : "33.333%") : "100%",
                 height: direction == "column" ? (optionsOpen ? "100%" : "33.333%") : "100%",
             }}
             tabIndex={0}
             onFocus={focusHandler}
             onBlur={blurHandler}
-            onMouseEnter={(e) => {setHoverOpen(true)}}
-            onMouseLeave={(e) => {setHoverOpen(false)}}
+            onMouseEnter={mouseEnterHandler}
+            onMouseLeave={mouseLeaveHandler}
         >
 
             {
@@ -215,13 +182,13 @@ export default function VotingWidget(props: VotingWidgetProps) {
             }
 
             {
-                <div className="w-full h-full" 
-                        style={{
-                    // For focusing on the voted element if the widgets gets focus
-                    opacity: optionsOpen ? 1 : 0,
-                    position: optionsOpen ? "relative" : "absolute",
-                    zIndex: optionsOpen ? 1 : -1
-                }}>
+                <div className="w-full h-full"
+                    style={{
+                        // For focusing on the voted element if the widgets gets focus
+                        opacity: optionsOpen ? 1 : 0,
+                        position: optionsOpen ? "relative" : "absolute",
+                        zIndex: optionsOpen ? 1 : -1
+                    }}>
                     <VoteSymbolList direction={direction} focusIdx={focusIdx} keydownHandler={navigationKeypressListener} vote={vote} listRef={listRef} voteCallbackCreator={voteToggler} />
                 </div>
             }
@@ -236,13 +203,13 @@ interface UnopenedComponentProps {
 
 }
 
-function UnopenedComponent(props: UnopenedComponentProps){
-    return props.hasVoted 
-    ? 
-    <span className="text-sm block group-hover:hidden
+function UnopenedComponent(props: UnopenedComponentProps) {
+    return props.hasVoted
+        ?
+        <span className="text-sm block group-hover:hidden
     group-focus:hidden text-center">Voted</span>
-    : 
-    <span className="text-sm block
+        :
+        <span className="text-sm block
     group-hover:hidden
     group-focus:hidden text-center">Vote</span>
 }
@@ -257,41 +224,63 @@ interface VoteSymbolListProps {
     direction: Direction,
     vote: VoteType | null,
     keydownHandler: (e: ReactKeyboardEvent<HTMLLIElement>) => void,
-    voteCallbackCreator: (vote: VoteType) => () =>  void
+    voteCallbackCreator: (vote: VoteType) => () => void
     focusIdx: number
 }
 
 function VoteSymbolList(props: VoteSymbolListProps) {
-    const {listRef, direction, vote, keydownHandler, voteCallbackCreator, focusIdx} = props
+    const { listRef, direction, vote, keydownHandler, voteCallbackCreator, focusIdx } = props
 
     return (<ul className="flex bg-blue-500 w-full h-full items-stretch
-                        justify-between divide-x-4 md:divide-x-0 md:divide-y-4"
-                ref={listRef}
-                style={{
-                    flexDirection: direction == "row" ? "row" : "column",
-                }}
-            >
-                {
-                    voteOptions.map((option, idx) => {
-                        return <li className="
-                    hover:border-8 hover:border-black
-                    focus:border-8 focus:border-black
-                "
-                            style={{
-                                fontSize: vote === option ? "200%" : "inherit",
-                                width: direction == "row" ? "33.333%" : "100%",
-                                height: direction == "column" ? "33.333%" : "100%",
-                            }} key={option}
-                            onKeyDown={keydownHandler}
-                            tabIndex={idx == focusIdx ? 0 : -1}
-                        >
-                            <VoteSymbol callback={voteCallbackCreator(option)}
-                                voteType={option}
-                            /></li>
-                    })
-                }
+                        justify-between divide-x-4 
+                        md:divide-x-0 md:divide-y-4"
+        ref={listRef}
+        style={{
+            flexDirection: direction == "row" ? "row" : "column",
+        }}
+    >
+        {
+            voteOptions.map((option, idx) => {
 
-            </ul>)
+                const hasVotedForThis = vote === option
+
+                return <li className="
+                relative
+                hover:text-4xl
+                focus:text-4xl
+                "
+
+                    style={{
+                        //backgroundColor: hasVotedForThis ? "red" : "blue",
+                        // fontSize: vote === option ? "200%" : "inherit",
+                        width: direction == "row" ? "33.333%" : "100%",
+                        height: direction == "column" ? "33.333%" : "100%",
+                    }} key={option}
+                    onKeyDown={keydownHandler}
+                    tabIndex={idx == focusIdx ? 0 : -1}
+                >
+                    <div className='before:content-[attr(data-content)] before:absolute
+                    before:z-10
+                    before:top-[inherit] before:left-[inherit]
+                    before:text-2xl before:font-bold before:
+                    before:transform before:-translate-x-1/2 before:-translate-y-1/2
+                    w-full h-full'
+                        data-content={hasVotedForThis ? "✔️" : ""}
+                        style={{
+                            top: direction == "row" ? "-30%" : "50%",
+                            left: direction == "row" ? "50%" : "-50%"
+                        }}
+                    >
+                        <VoteSymbol callback={voteCallbackCreator(option)}
+                            voteType={option}
+                        />
+                    </div>
+                </li>
+
+            })
+        }
+
+    </ul>)
 }
 
 function VoteSymbol(props: VoteSymbolProps) {
@@ -309,7 +298,7 @@ function VoteSymbol(props: VoteSymbolProps) {
     return <div className="h-full w-full flex justify-center items-center" style={{
         backgroundColor: voteColors.get(props.voteType)
     }}
-    onClick={props.callback}
+        onClick={props.callback}
     >
         {symbol}
     </div>
