@@ -19,7 +19,8 @@ type Direction = "row" | "column"
 
 interface VotingWidgetProps {
     givenVote: Vote | undefined
-    movieEventId: number
+    movieEventId: number,
+    sendVote: (vote: VoteType) => void
 }
 
 const voteOptions: Array<VoteType> = ["POSITIVE", "NEUTRAL", "NEGATIVE"]
@@ -40,8 +41,6 @@ export default function VotingWidget(props: VotingWidgetProps) {
 
 
     const firstFocused = props.givenVote != null ? (props.givenVote?.voteType == "POSITIVE" ? 0 : props.givenVote?.voteType == "NEUTRAL" ? 1 : 2) : 1
-
-    const [vote, setVote] = useState<VoteType | null>(props.givenVote?.voteType ?? null)
     const [loading, setLoading] = useState(false)
     const [focusIdx, setFocusIdx] = useState(firstFocused)
     const [focusOpen, setFocusOpen] = useState(false)
@@ -49,9 +48,13 @@ export default function VotingWidget(props: VotingWidgetProps) {
     const [displayRow, setDisplayRow] = useState<boolean>(true)
     const listRef = useRef<HTMLUListElement>(null)
 
+    const vote = props.givenVote?.voteType ?? null
+
     const optionsOpen = focusOpen || hoverOpen
 
     const hasVoted = vote != null && vote !== "NONVOTE"
+
+    const sendVote = props.sendVote
 
     useEffect(() => {
         function handleResize() {
@@ -69,26 +72,23 @@ export default function VotingWidget(props: VotingWidgetProps) {
 
 
 
-    async function sendVote(option: VoteType) {
-        try {
-            const result = await voteForEventMovie(props.movieEventId, option)
-            setVote(result.voteType)
-            toast.success("Vote changed")
-        } catch (e) {
-            toast.error("Failed to vote")
-        } finally {
-            setLoading(false)
-        }
 
-    }
 
 
     function voteToggler(option: VoteType) {
 
-        return () => {
+        return async () => {
             if (loading) return;
             setLoading(true)
-            sendVote(option)
+            try {
+                await sendVote(option)
+                toast.success("Vote changed")
+            } catch (e) {
+                toast.error("Vote change failed")
+            } finally {
+                setLoading(false)
+            }
+
         }
 
     }
