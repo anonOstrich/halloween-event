@@ -69,12 +69,6 @@ export default function VotingWidget(props: VotingWidgetProps) {
 
     const direction: Direction = displayRow ? "row" : "column"
 
-
-
-
-
-
-
     function voteToggler(option: VoteType) {
 
         return async () => {
@@ -88,7 +82,6 @@ export default function VotingWidget(props: VotingWidgetProps) {
             } finally {
                 setLoading(false)
             }
-
         }
 
     }
@@ -166,9 +159,11 @@ export default function VotingWidget(props: VotingWidgetProps) {
         hover:bg-opacity-0  
         focus:bg-opacity-0
         "
+            aria-disabled={loading}
             style={{
                 width: direction == "row" ? (optionsOpen ? "100%" : "33.333%") : "100%",
                 height: direction == "column" ? (optionsOpen ? "100%" : "33.333%") : "100%",
+                transform: loading ? "scale(0.8)" : "scale(1)",
             }}
             tabIndex={0}
             onFocus={focusHandler}
