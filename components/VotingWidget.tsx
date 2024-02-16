@@ -160,8 +160,8 @@ export default function VotingWidget(props: VotingWidgetProps) {
         style={{
             flexDirection: direction == "row" ? "row" : "column"
         }}>
-        <div className="group  border-dashed border-2 border-black flex items-center        justify-center  hover:cursor-pointer
-        bg-gray-500 bg-opacity-100
+        <div className="group  border-dashed border-2 border-black rounded-md flex items-center        justify-center  hover:cursor-pointer
+         shadow-lg bg-accent-200 dark:bg-dark-accent-200
         transition-all
         hover:bg-opacity-0  
         focus:bg-opacity-0
