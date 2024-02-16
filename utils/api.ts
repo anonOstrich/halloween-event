@@ -28,6 +28,7 @@ export async function addNewMovie(title: string, year: number, description: stri
 }
 
 
+
 // Really this is toggling!
 export async function voteForEventMovie(movieEventId: number, voteType: VoteType): Promise<Vote> {
 
@@ -75,4 +76,17 @@ export async function addMoviesToEventClient(eventId: number, movieIds: Array<nu
     const { data } = parsedResult
 
     return data
+}
+
+
+interface VoteSummary {
+    posVotes: number,
+    neutralVotes: number,
+    negVotes: number
+
+}
+export async function getVotesForEventMovie(movieEventId: number): Promise<VoteSummary> {
+    const response = await fetch(`/api/events/${movieEventId}/votes`)
+    const { data } = await response.json()
+    return data.votes
 }

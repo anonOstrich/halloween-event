@@ -7,6 +7,7 @@ import AsyncSelect from 'react-select/async';
 
 import debounce from 'debounce-promise'
 import { useRouter } from "next/navigation";
+import { useDarkThemeIsPreferred } from "@/utils/hooks";
 
 
 
@@ -19,17 +20,7 @@ interface EventMovieAdderProps {
 export function EventMovieAdder(props: EventMovieAdderProps) {
     const router = useRouter()
 
-    const [darkModeEnabled, setDarkModeEnabled] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches)
-
-    useEffect(() => {
-        const callback = (e: MediaQueryListEvent) => {
-            setDarkModeEnabled(e.matches)
-        }
-        const id = window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
-        return () => {
-            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
-        }
-    }, [])
+    const darkModeEnabled = useDarkThemeIsPreferred()
 
     const { eventId, initialMovieOptions } = props
 
