@@ -1,5 +1,6 @@
 'use client'
-import { VoteType } from "@prisma/client";
+
+import { BarGraph } from "./BarGraph";
 
 
 interface VotingStatisticsProps {
@@ -15,9 +16,29 @@ export default function VotingStatistics(props: VotingStatisticsProps) {
     } = props.votes
 
 
-    return (<ul className="flex flex-col gap-2 items-center p-4 border-2 border-black rounded-md">
-        <li>Positive votes: {posVotes}</li>
-        <li>Neutral votes: {neutralVotes}</li>
-        <li>Negative votes: {negVotes} </li>
-    </ul>)
+    const totalVotes = posVotes + neutralVotes + negVotes;
+    if (totalVotes === 0) {
+        return (<div className="flex flex-col gap-2 items-center p-4 border-2 border-black rounded-md">No votes yet</div>)
+    }
+
+    const mean = (posVotes - negVotes) / totalVotes;
+    const meanRounded = mean.toFixed(2);
+
+
+    return (
+        <div>
+            <p>Mean: {meanRounded}</p>
+            <p>Total votes: {totalVotes}</p>
+            <div className="w-full h-8">
+                <BarGraph data={[{
+                    value: posVotes, label: "Positive", color: "green"
+                }, {
+                    value: neutralVotes, label: "Neutral", color: "yellow"
+                }, {
+                    value: negVotes, label: "Negative", color: "red"
+                }]} />
+            </div>
+
+        </div>)
 }
+
