@@ -1,4 +1,6 @@
 
+
+
 interface BarGraphItem {
     value: number,
     label: string,
@@ -22,7 +24,7 @@ export function BarGraph({ data }: BarGraphProps) {
     const proportionsFormatted = proportionsNormalized.map(val => (val * 100).toFixed(2) + "%");
 
 
-    return (<ul className="w-full h-full flex">
+    return (<ul className="w-full h-full flex border-2 border-black">
         {
             usedProportions.map((e, i) => {
                 return (

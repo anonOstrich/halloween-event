@@ -43,7 +43,7 @@ const config: Config = {
         "bg-300":"#c4bcab",
         "danger": "#ee0000",
         "success": "#00ee00",
-        "informational": "#a1996c",
+        "informational": "#c9bf87",
       }
     },
   },
