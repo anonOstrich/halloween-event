@@ -73,6 +73,8 @@ export default function VotingWidget(props: VotingWidgetProps) {
 
         return async () => {
             if (loading) return;
+            if (!optionsOpen) return;
+            console.log('toggling vote!')
             setLoading(true)
             try {
                 await sendVote(option)
@@ -87,6 +89,8 @@ export default function VotingWidget(props: VotingWidgetProps) {
     }
 
     function navigationKeypressListener(e: ReactKeyboardEvent<HTMLLIElement>) {
+        console.log('keypress listener firing!')
+
         const idx = focusIdx
         let newIdx = -1
         switch (e.key) {
@@ -122,6 +126,9 @@ export default function VotingWidget(props: VotingWidgetProps) {
     }
 
     function focusHandler(e: ReactFocusEvent<HTMLDivElement>) {
+        console.log('focus handler firing!')
+
+
         //@ts-ignore
         const listIsTargetOfFocus = e.target?.classList.contains("group")
         // Shift focus on the voted element if the widget gets focus
@@ -170,6 +177,14 @@ export default function VotingWidget(props: VotingWidgetProps) {
             onBlur={blurHandler}
             onMouseEnter={mouseEnterHandler}
             onMouseLeave={mouseLeaveHandler}
+            // Otherwise clicking will also imediately vote
+            onTouchEnd={(e) => {
+                if (!optionsOpen) {
+                    mouseEnterHandler()
+                    e.preventDefault();
+                }
+            }}
+
         >
 
             {
@@ -293,7 +308,10 @@ function VoteSymbol(props: VoteSymbolProps) {
     return <div className="h-full w-full flex justify-center items-center" style={{
         backgroundColor: voteColors.get(props.voteType)
     }}
-        onClick={props.callback}
+        onClick={(e) => {
+            console.log('clicked!')
+            props.callback()
+        }}
     >
         {symbol}
     </div>
