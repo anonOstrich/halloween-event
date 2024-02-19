@@ -45,8 +45,8 @@ export default function VotingStatistics(props: VotingStatisticsProps) {
 
 
     return (
-        <div className="flex flex-col md:flex-row sm:gap-2 md:gap-4 lg:gap-16 items-start md:items-center">
-            <h3 className='prose prose-2xl'>Positivity: {meanRounded}</h3>
+        <div className="flex flex-col md:flex-row sm:gap-2 md:gap-4 lg:gap-16 items-start md:items-center ">
+            <h3 className='prose prose-2xl dark:prose-invert'>Positivity: {meanRounded}</h3>
             <div className='w-full flex flex-col align-center justify-center'>
                 <div className="h-8 w-full min-w-[100px] mx-auto">
                     <BarGraph data={[{
@@ -57,7 +57,7 @@ export default function VotingStatistics(props: VotingStatisticsProps) {
                         value: negVotes, label: "Negative", color: negColor?.toString()!
                     }]} />
                 </div>
-                <h3 className='prose prose-xl'>Total votes: {totalVotes}</h3>
+                <h3 className='prose prose-xl dark:prose-invert'>Total votes: {totalVotes}</h3>
 
             </div>
 
