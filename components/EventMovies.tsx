@@ -1,6 +1,7 @@
 import { prisma } from "@/utils/db"
 import { EventMovieAdder } from "./EventModieAdder"
 import { VotingOption } from "./VotingOption"
+import NewEventMovieAdder from "./NewEventMovieAdder"
 
 export async function EventMovies({ eventId }: { eventId: number }) {
     const voteOptions = await prisma.movieEvent.findMany({
@@ -29,8 +30,12 @@ export async function EventMovies({ eventId }: { eventId: number }) {
             }
         </ul>
 
+        <NewEventMovieAdder eventId={eventId} initialMovieOptions={initialMovieOptions} />
+
 
         <EventMovieAdder eventId={eventId} initialMovieOptions={initialMovieOptions} />
+
+
 
     </div>)
 }

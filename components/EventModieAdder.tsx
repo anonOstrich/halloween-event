@@ -2,7 +2,6 @@
 
 import { addMoviesToEventClient, searchForMovieFromDatabase } from "@/utils/api";
 import { Movie } from "@prisma/client"
-import { useEffect, useState } from "react"
 import AsyncSelect from 'react-select/async';
 
 import debounce from 'debounce-promise'
@@ -89,7 +88,12 @@ export function EventMovieAdder(props: EventMovieAdderProps) {
                         menu: (baseStyles, state) => ({
                             ...baseStyles,
                             backgroundColor: 'inherit',
+
                         }),
+                        input: (baseStyles, state) => ({
+                            ...baseStyles,
+                            color: "inherit"
+                        })
                     }}
                     isMulti
                     cacheOptions
