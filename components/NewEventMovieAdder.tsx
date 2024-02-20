@@ -7,6 +7,7 @@ import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import debounce from 'debounce-promise';
 import { AbsoluteString } from 'next/dist/lib/metadata/types/metadata-types';
 import { useState } from 'react';
+import { addMoviesToEventClient, getMoviesFromExternalAPI, searchForMovieFromDatabase } from '@/utils/api';
 
 interface NewEventMovieAdderProps {
     eventId: number,
@@ -20,12 +21,46 @@ export default function NewEventMovieAdder({ eventId, initialMovieOptions }: New
     const prefersDarkMode = useDarkThemeIsPreferred()
 
     async function handleMovieAdding(data: FormData) {
-        console.log('trying to add something :^)')
+        const movieId = Number(data.getAll('event-movie'))
+        console.log("movieId: ", movieId)
+
+        const succesfullyAddedMovies = await addMoviesToEventClient(eventId, [movieId])
+        console.log(`successfully added ${succesfullyAddedMovies} movies`)
+    }
+
+    async function fetchDBMovies(searchInput: string) {
+
+        const movies = await searchForMovieFromDatabase(searchInput)
+        return movies.map(m => ({
+            value: m.id,
+            label: m.title
+        }))
+    }
+
+    async function fetchAPIMovies(searchInput: string) {
+        const movies = await getMoviesFromExternalAPI(searchInput)
+        return movies.map(m => ({
+            value: m.id,
+            label: m.title
+        }))
     }
 
 
     async function handleMovieFetching(searchInput: string) {
-        return [{ value: 1, label: "test" }, { value: 2, label: "test2" }]
+        if (searchInput.trim().length <= 0) {
+            return initialMovieOptions.map(m => ({
+                label: m.title,
+                value: m.id
+            }))
+
+        }
+
+        if (externalAPI) {
+            return fetchAPIMovies(searchInput)
+        } else {
+            return fetchDBMovies(searchInput)
+        }
+
     }
 
     const debouncedLoadOptions = debounce(handleMovieFetching, 1000)
@@ -61,7 +96,7 @@ export default function NewEventMovieAdder({ eventId, initialMovieOptions }: New
                 <label htmlFor="event-movies" className="text-lg">Add movie(s)</label>
 
                 <AsyncSelect
-                    name="event-movies"
+                    name="event-movie"
                     id="event-movies"
                     className="bg-bg-300 dark:bg-dark-bg-300"
                     theme={(theme) => ({

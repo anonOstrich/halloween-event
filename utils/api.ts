@@ -56,7 +56,7 @@ export async function searchForMovieFromDatabase(searchTerm: string): Promise<Mo
     return movies
 }
 
-export async function addMoviesToEventClient(eventId: number, movieIds: Array<number>) {
+export async function addMoviesToEventClient(eventId: number, movieIds: Array<number>): Promise<number> {
 
 
     if (movieIds.length == 0) {
