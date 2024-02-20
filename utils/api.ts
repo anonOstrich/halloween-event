@@ -2,7 +2,7 @@ import { Vote, VoteType } from "@prisma/client";
 import { Movie } from "./types"
 import { getUserId } from "./auth";
 
-export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Array<Movie>> {
+export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Movie[]> {
     const response = await fetch(`/api/movies/search`, {
         method: 'POST',
         body: JSON.stringify({
@@ -12,6 +12,7 @@ export async function getMoviesFromExternalAPI(searchTerm: string): Promise<Arra
     const { data } = await response.json();
     return data.movies;
 }
+
 
 export async function addNewMovie(title: string, year: number, description: string): Promise<string> {
     const response = await fetch('/api/movies', {

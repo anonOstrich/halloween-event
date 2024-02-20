@@ -8,6 +8,7 @@ import debounce from 'debounce-promise';
 import { AbsoluteString } from 'next/dist/lib/metadata/types/metadata-types';
 import { useState } from 'react';
 import { addMoviesToEventClient, getMoviesFromExternalAPI, searchForMovieFromDatabase } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 interface NewEventMovieAdderProps {
     eventId: number,
@@ -18,6 +19,7 @@ interface NewEventMovieAdderProps {
 export default function NewEventMovieAdder({ eventId, initialMovieOptions }: NewEventMovieAdderProps) {
 
     const [externalAPI, setExternalAPI] = useState(false)
+    const router = useRouter()
     const prefersDarkMode = useDarkThemeIsPreferred()
 
     async function handleMovieAdding(data: FormData) {
@@ -26,6 +28,9 @@ export default function NewEventMovieAdder({ eventId, initialMovieOptions }: New
 
         const succesfullyAddedMovies = await addMoviesToEventClient(eventId, [movieId])
         console.log(`successfully added ${succesfullyAddedMovies} movies`)
+        if (succesfullyAddedMovies > 0) {
+            router.refresh()
+        }
     }
 
     async function fetchDBMovies(searchInput: string) {

@@ -2,7 +2,7 @@ import { getUserId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
 import { NextRequest } from "next/server";
 
-
+// TODO: add also the movie api id?
 export async function POST(req: NextRequest) {
 
     const {title, year, description} = await req.json()
