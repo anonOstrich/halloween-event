@@ -5,13 +5,14 @@ import AsyncSelect from 'react-select/async';
 import { Movie } from '@prisma/client';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import debounce from 'debounce-promise';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import {
   addMoviesToEventClient,
   getMoviesFromExternalAPI,
   searchForMovieFromDatabase
 } from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface NewEventMovieAdderProps {
   eventId: number;
@@ -23,6 +24,8 @@ export default function NewEventMovieAdder({
   initialMovieOptions
 }: NewEventMovieAdderProps) {
   const [externalAPI, setExternalAPI] = useState(false);
+  // const instanceId = useId();
+  const instanceId = 'hahaRandom??';
   const router = useRouter();
   const prefersDarkMode = useDarkThemeIsPreferred();
 
@@ -115,17 +118,7 @@ export default function NewEventMovieAdder({
         }
 
         <div>
-          <div>
-            <label htmlFor="use-api">Use external movie API for adding: </label>
-            <input
-              type="checkbox"
-              name="use-api"
-              id="use-api"
-              onChange={(e) => {
-                setExternalAPI(e.target.checked);
-              }}
-            />
-          </div>
+          <SourceToggler setValue={setExternalAPI} />
 
           {externalAPI && (
             <h4 className="text-2xl bg-cyan-700 py-2 text-center">
@@ -185,6 +178,57 @@ export default function NewEventMovieAdder({
           Add movie
         </button>
       </form>
+    </div>
+  );
+}
+
+interface SourceTogglerProps {
+  setValue: (value: boolean) => void;
+}
+
+// Probably quite a lot to do: make as accessible as a default checkbox
+// If you want to use a ready-made component, use e.g. Flowbite
+export function SourceToggler({ setValue }: SourceTogglerProps) {
+  const [isChecked, setIsChecked] = useState(false);
+
+  return (
+    <div className="flex gap-2 md:gap-4 items-center">
+      <input
+        checked={isChecked}
+        className="peer group hidden"
+        type="checkbox"
+        name="use-api"
+        id="use-api"
+        onChange={(e) => {
+          setValue(e.target.checked);
+        }}
+      />
+      <div
+        className="w-6 h-6 min-w-[20px] min-h-[20px] max-w-[100px] max-h-[100px]
+        rounded-md border-2 border-black
+        bg-bg-200
+        dark:bg-dark-bg-200
+        group-checked:bg-cyan-700
+        flex justify-center items-center
+        "
+        onClick={() => {
+          setIsChecked(!isChecked);
+        }}
+      >
+        <span
+          className="block font-bold text-sm md:text-md lg:text-lg
+          text-bg-100
+          dark:text-dark-bg-100
+          group-checked:text-red-800
+        "
+        >
+          X
+        </span>
+      </div>
+      <label htmlFor="use-api">
+        Search from{' '}
+        <Link href="https://www.themoviedb.org/">The Movie Database</Link>
+      </label>
     </div>
   );
 }

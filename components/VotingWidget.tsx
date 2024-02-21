@@ -16,6 +16,7 @@ import {
 import { voteForEventMovie } from '@/utils/api';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import { toast } from 'react-toastify';
+import VoteSymbol from './VoteSymbol';
 
 const fullConfig = resolveConfig(tailwindConfig);
 
@@ -231,11 +232,6 @@ function UnopenedComponent(props: UnopenedComponentProps) {
   );
 }
 
-type VoteSymbolProps = {
-  callback: () => void;
-  voteType: VoteType;
-};
-
 interface VoteSymbolListProps {
   listRef: React.RefObject<HTMLUListElement>;
   direction: Direction;
@@ -307,38 +303,5 @@ function VoteSymbolList(props: VoteSymbolListProps) {
         );
       })}
     </ul>
-  );
-}
-
-function VoteSymbol(props: VoteSymbolProps) {
-  const darkThemeIsPreferred = useDarkThemeIsPreferred();
-
-  const voteColors: Map<VoteType, string> = new Map([
-    [
-      'POSITIVE',
-      fullConfig.theme?.colors![
-        darkThemeIsPreferred ? 'dark-success' : 'success'
-      ].toString() ?? 'yellow'
-    ],
-    ['NEUTRAL', 'current'],
-    [
-      'NEGATIVE',
-      fullConfig.theme?.colors![
-        darkThemeIsPreferred ? 'dark-danger' : 'danger'
-      ].toString() ?? 'yellow'
-    ]
-  ]);
-
-  const symbol = voteSymbols.get(props.voteType);
-  return (
-    <div
-      className="h-full w-full flex justify-center items-center"
-      style={{
-        backgroundColor: voteColors.get(props.voteType)
-      }}
-      onClick={props.callback}
-    >
-      {symbol}
-    </div>
   );
 }
