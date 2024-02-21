@@ -5,7 +5,6 @@ import AsyncSelect from 'react-select/async';
 import { Movie } from '@prisma/client';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import debounce from 'debounce-promise';
-import { AbsoluteString } from 'next/dist/lib/metadata/types/metadata-types';
 import { useState } from 'react';
 import {
   addMoviesToEventClient,
@@ -56,6 +55,25 @@ export default function NewEventMovieAdder({
     }));
   }
 
+  async function fetchMoviesA(searchInput: string) {
+    const movies = [
+      { label: 'aa', value: 1 },
+      { label: 'bb', value: 2 },
+      { label: 'cc', value: 3 }
+    ];
+
+    return movies.filter((m) => m.label.includes(searchInput));
+  }
+
+  async function fetchMoviesB(searchInput: string) {
+    const movies = [
+      { label: 'a', value: 1 },
+      { label: 'b', value: 2 },
+      { label: 'c', value: 3 }
+    ];
+    return movies.filter((m) => m.label.includes(searchInput));
+  }
+
   async function handleMovieFetching(searchInput: string) {
     if (searchInput.trim().length <= 0) {
       return initialMovieOptions.map((m) => ({
@@ -64,14 +82,22 @@ export default function NewEventMovieAdder({
       }));
     }
 
+    console.log('search input: ', searchInput);
+
     if (externalAPI) {
-      return fetchAPIMovies(searchInput);
+      return fetchMoviesA(searchInput);
     } else {
-      return fetchDBMovies(searchInput);
+      return fetchMoviesB(searchInput);
     }
+
+    // if (externalAPI) {
+    //   return fetchAPIMovies(searchInput);
+    // } else {
+    //   return fetchDBMovies(searchInput);
+    // }
   }
 
-  const debouncedLoadOptions = debounce(handleMovieFetching, 1000);
+  const debouncedLoadOptions = debounce(handleMovieFetching, 500);
 
   const loadOptions = debouncedLoadOptions;
 
@@ -120,6 +146,7 @@ export default function NewEventMovieAdder({
               colors: {
                 ...theme.colors,
                 // N.B.! these are manually set to the same values as in the tailwind config!
+                // TODO: use the tailwind config values instead, look up in JavaScript
                 primary25: prefersDarkMode ? '#610fff' : '#ffd299'
               }
             })}
@@ -145,8 +172,11 @@ export default function NewEventMovieAdder({
                 color: prefersDarkMode ? 'white' : 'inherit'
               })
             }}
-            cacheOptions
-            defaultOptions
+            // Cache will clear when this value changes
+            // a truthy value -> caching is enabled
+            cacheOptions={`caching-${externalAPI}`}
+            // How would we choose the defaults? Better to just leave empty?
+            // defaultOptions
             loadOptions={loadOptions}
           />
         </div>
