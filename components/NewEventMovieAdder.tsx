@@ -195,7 +195,7 @@ export function SourceToggler({ setValue }: SourceTogglerProps) {
     <div className="flex gap-2 md:gap-4 items-center">
       <input
         checked={isChecked}
-        className="peer group hidden"
+        className="peer hidden"
         type="checkbox"
         name="use-api"
         id="use-api"
@@ -204,26 +204,23 @@ export function SourceToggler({ setValue }: SourceTogglerProps) {
         }}
       />
       <div
-        className="w-6 h-6 min-w-[20px] min-h-[20px] max-w-[100px] max-h-[100px]
+        className="w-10 h-10 min-w-[20px] min-h-[20px] max-w-[100px] max-h-[100px]
+        before:content-['✓']
+        before:text-2xl md:text-4xl lg:text-4xl
+        before:font-extrabold before:text-transparent
+        flex justify-center items-stretch
+        peer-checked:before:text-bg-200   dark:peer-checked:before:text-dark-bg-200
+        before:flex before:items-center before:justify-center
         rounded-md border-2 border-black
         bg-bg-200
         dark:bg-dark-bg-200
-        group-checked:bg-cyan-700
-        flex justify-center items-center
+        peer-checked:bg-cyan-700
+        dark:peer-checked:bg-cyan-900
         "
         onClick={() => {
           setIsChecked(!isChecked);
         }}
       >
-        <span
-          className="block font-bold text-sm md:text-md lg:text-lg
-          text-bg-100
-          dark:text-dark-bg-100
-          group-checked:text-red-800
-        "
-        >
-          X
-        </span>
       </div>
       <label htmlFor="use-api">
         Search from{' '}

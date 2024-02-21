@@ -5,8 +5,6 @@ declare const window: Window;
 export function useDarkThemeIsPreferred() {
   const [darkThemeEnabled, setDarkThemeEnabled] = useState(false);
 
-  console.log('all good ? ', typeof window !== 'undefined');
-
   useEffect(() => {
     const callback = (e: MediaQueryListEvent) => {
       setDarkThemeEnabled(e.matches);
