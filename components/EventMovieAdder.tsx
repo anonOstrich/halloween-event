@@ -14,6 +14,29 @@ import {
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// For testing only
+// async function fetchMoviesA(searchInput: string) {
+//   const movies = [
+//     { label: 'aa', value: 1 },
+//     { label: 'bb', value: 2 },
+//     { label: 'cc', value: 3 }
+//   ];
+
+//   return movies.filter((m) => m.label.includes(searchInput));
+// }
+
+// async function fetchMoviesB(searchInput: string) {
+//   const movies = [
+//     { label: 'a', value: 1 },
+//     { label: 'b', value: 2 },
+//     { label: 'c', value: 3 }
+//   ];
+
+//   return movies.filter((m) => m.label.includes(searchInput));
+// }
+
+export type IdType = 'db' | 'movieAPI';
+
 interface EventMovieAdderProps {
   eventId: number;
   initialMovieOptions: Movie[];
@@ -30,10 +53,13 @@ export default function EventMovieAdder({
   async function handleMovieAdding(data: FormData) {
     const movieId = Number(data.getAll('event-movie'));
     console.log('movieId: ', movieId);
+    const idType = data.get('id-type')!;
 
-    const succesfullyAddedMovies = await addMoviesToEventClient(eventId, [
-      movieId
-    ]);
+    const succesfullyAddedMovies = await addMoviesToEventClient(
+      eventId,
+      [movieId],
+      idType as IdType
+    );
     console.log(`successfully added ${succesfullyAddedMovies} movies`);
     if (succesfullyAddedMovies > 0) {
       router.refresh();
@@ -56,25 +82,6 @@ export default function EventMovieAdder({
     }));
   }
 
-  async function fetchMoviesA(searchInput: string) {
-    const movies = [
-      { label: 'aa', value: 1 },
-      { label: 'bb', value: 2 },
-      { label: 'cc', value: 3 }
-    ];
-
-    return movies.filter((m) => m.label.includes(searchInput));
-  }
-
-  async function fetchMoviesB(searchInput: string) {
-    const movies = [
-      { label: 'a', value: 1 },
-      { label: 'b', value: 2 },
-      { label: 'c', value: 3 }
-    ];
-    return movies.filter((m) => m.label.includes(searchInput));
-  }
-
   async function handleMovieFetching(searchInput: string) {
     if (searchInput.trim().length <= 0) {
       return initialMovieOptions.map((m) => ({
@@ -83,24 +90,18 @@ export default function EventMovieAdder({
       }));
     }
 
-    console.log('search input: ', searchInput);
-
     if (externalAPI) {
-      return fetchMoviesA(searchInput);
+      return fetchAPIMovies(searchInput);
     } else {
-      return fetchMoviesB(searchInput);
+      return fetchDBMovies(searchInput);
     }
-
-    // if (externalAPI) {
-    //   return fetchAPIMovies(searchInput);
-    // } else {
-    //   return fetchDBMovies(searchInput);
-    // }
   }
 
   const debouncedLoadOptions = debounce(handleMovieFetching, 500);
 
   const loadOptions = debouncedLoadOptions;
+
+  const idSource: IdType = externalAPI ? 'movieAPI' : 'db';
 
   return (
     <div
@@ -119,6 +120,7 @@ export default function EventMovieAdder({
         "
       >
         <input type="hidden" name="event-id" id="event-id" value={eventId} />
+        <input type="hidden" name="id-type" id="id-type" value={idSource} />
 
         {
           // TODO:

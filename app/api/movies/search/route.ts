@@ -25,7 +25,6 @@ export async function fetchMoviesDetailFromExternalAPI(
   const jsonResponses = await Promise.all(responses.map((r) => r.json()));
   // First: test that this works with one movie
 
-  console.log('full JSON response: ', JSON.stringify(jsonResponses, null, 2));
   const result = (jsonResponses as any[]).map((fullMovie) => ({
     adult: fullMovie.adult,
     genre_ids: fullMovie.genre_ids,
@@ -36,8 +35,6 @@ export async function fetchMoviesDetailFromExternalAPI(
     release_date: fullMovie.release_date,
     title: fullMovie.title
   })) as Array<Movie>;
-
-  console.log('cleaner result: ', JSON.stringify(result, null, 2));
   return result;
 }
 
