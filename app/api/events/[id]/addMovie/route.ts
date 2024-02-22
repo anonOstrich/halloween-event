@@ -1,76 +1,26 @@
 import { fetchMoviesDetailFromExternalAPI } from '@/app/api/movies/search/route';
+import {
+  MovieDetailsWithId,
+  MovieDetailsWithMovieDBId,
+  parseMovieDetailsArray
+} from '@/app/api/utils/type-utils';
 import { getUserId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextRequest } from 'next/server';
-
-interface NiceReturnType {
-  externalIds: number[];
-  createdIds: number[];
-}
-
-async function createMoviesIfNecessary(
-  ids: number[],
-  userId: number
-): Promise<NiceReturnType> {
-  const movieIdsForExistingMovies = await prisma.movie.findMany({
-    where: {
-      id: {
-        in: ids
-      }
-    },
-    select: {
-      id: true
-    }
-  });
-  const existingIds = movieIdsForExistingMovies.map((m) => m.id);
-
-  const newMovieIdsToCreate = ids.filter(
-    (movieId) => !existingIds.includes(movieId)
-  );
-
-  if (newMovieIdsToCreate.length == 0) {
-    return {
-      externalIds: [],
-      createdIds: []
-    };
-  }
-
-  const movieDetails =
-    await fetchMoviesDetailFromExternalAPI(newMovieIdsToCreate);
-
-  console.log('movieDetails: ', JSON.stringify(movieDetails, null, 2));
-
-  let createdIds: number[] = [];
-  for (let movie of movieDetails) {
-    const created = await prisma.movie.create({
-      data: {
-        title: movie.title,
-        description: movie.overview,
-        year: Number(movie.release_date.split('-')[0]),
-        userId
-      }
-    });
-    createdIds.push(created.id);
-  }
-  return {
-    externalIds: newMovieIdsToCreate,
-    createdIds
-  };
-}
 
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const eventId = Number(params.id);
-  const body = await req.json();
   const userId = await getUserId();
 
-  // Might be movie ids or api ids
-  const movieIds = (body.movieIds as any[]).map((x) => Number(x));
+  const eventId = Number(params.id);
+  const body = await req.json();
 
-  //TODO: choose a limit, warn on the client side as well
-  if (movieIds.length > 10) {
+  const information = parseMovieDetailsArray(body.movieIds);
+
+  if (information.length > 10) {
+    //TODO: choose a limit, warn on the client side as well
     return Response.json(
       {
         error: 'You can only add 10 movies at a time'
@@ -81,49 +31,88 @@ export async function POST(
     );
   }
 
-  const alreadyAssociatedIds = (
-    await prisma.movieEvent.findMany({
-      where: {
-        eventId: eventId,
-        movieId: {
-          in: movieIds
-        }
-      },
-      select: {
-        movieId: true
+  // 1. CHECK THAT ALL THE ID MOVIES ARE VALID
+  const moviesWithIds = information.filter(
+    (m) => 'id' in m
+  ) as MovieDetailsWithId[];
+  const countInDatabase = await prisma.movie.count({
+    where: {
+      id: {
+        in: moviesWithIds.map((m) => m.id)
       }
-    })
-  ).map((d) => d.movieId);
+    }
+  });
 
-  let newMovieIdsToAssociate = movieIds.filter(
-    (movieId) => !alreadyAssociatedIds.includes(movieId)
+  if (countInDatabase < moviesWithIds.length) {
+    throw new Error(':/ sucks to suck');
+  }
+
+  // 2. FIGURE OUT WHICH EXTERNAL MOVIES ARE ALREADY IN THE DATABASE
+  const moviesWithMovieDBIds = information.filter(
+    (m) => 'movieDBId' in m
+  ) as MovieDetailsWithMovieDBId[];
+
+  const externalIdMoviesAlreadyInDB = await prisma.movie.findMany({
+    where: {
+      movieDBId: {
+        in: moviesWithMovieDBIds.map((m) => m.movieDBId)
+      }
+    }
+  });
+
+  // 3. CREATE THE MOVIES THAT ARE NOT IN THE DATABASE
+  const moviesToCreate = moviesWithMovieDBIds.filter(
+    (m) =>
+      !externalIdMoviesAlreadyInDB.map((m) => m.movieDBId).includes(m.movieDBId)
   );
 
-  const { createdIds, externalIds } = await createMoviesIfNecessary(
-    newMovieIdsToAssociate,
-    userId
+  const moviesToCreateDetails = await fetchMoviesDetailFromExternalAPI(
+    moviesToCreate.map((m) => m.movieDBId)
   );
 
-  // Don't want to associate the extenal ids!
-  newMovieIdsToAssociate = newMovieIdsToAssociate.filter(
-    (movieId) => !externalIds.includes(movieId)
-  );
+  const createdMovies = await prisma.movie.createMany({
+    data: moviesToCreateDetails.map((m) => ({
+      movieDBId: m.id,
+      title: m.title,
+      description: m.overview,
+      year: Number(m.release_date.split('-')[0]),
+      userId
+    }))
+  });
 
-  //Do want to associate the created ids!
-  newMovieIdsToAssociate = newMovieIdsToAssociate.concat(createdIds);
+  if (createdMovies.count !== moviesToCreate.length) {
+    console.error('Could not create all the movies...');
+  }
 
-  const dataToInsert = newMovieIdsToAssociate.map((movieId) => ({
-    eventId: eventId,
-    movieId: movieId,
-    userId: userId
-  }));
+  const createdMovieIds = await prisma.movie.findMany({
+    where: {
+      movieDBId: {
+        in: moviesToCreate.map((m) => m.movieDBId)
+      }
+    },
+    select: {
+      id: true
+    }
+  });
 
+  const allIdsToAssociate = [
+    ...moviesWithIds.map((m) => m.id),
+    ...externalIdMoviesAlreadyInDB.map((m) => m.id),
+    ...createdMovieIds.map((m) => m.id)
+  ];
+
+  // 4. ASSOCIATE THE MOVIES WITH THE EVENT
+  // What if a movie is already associated with the event? Just ignore is a working initial solution
   const result = await prisma.movieEvent.createMany({
-    data: dataToInsert,
-    // Skips: only in the new data, or also for the database? Experiment
+    data: allIdsToAssociate.map((movieId) => ({
+      eventId: eventId,
+      movieId: movieId,
+      userId: userId
+    })),
     skipDuplicates: true
   });
 
+  // 5. RETURN THE NUMBER OF MOVIES ASSOCIATED SUCCESSFULLY
   return Response.json(
     {
       data: result.count
