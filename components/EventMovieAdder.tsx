@@ -14,15 +14,15 @@ import {
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-interface NewEventMovieAdderProps {
+interface EventMovieAdderProps {
   eventId: number;
   initialMovieOptions: Movie[];
 }
 
-export default function NewEventMovieAdder({
+export default function EventMovieAdder({
   eventId,
   initialMovieOptions
-}: NewEventMovieAdderProps) {
+}: EventMovieAdderProps) {
   const [externalAPI, setExternalAPI] = useState(false);
   const router = useRouter();
   const prefersDarkMode = useDarkThemeIsPreferred();
@@ -103,11 +103,21 @@ export default function NewEventMovieAdder({
   const loadOptions = debouncedLoadOptions;
 
   return (
-    <div>
-      <h3>Event id: {eventId}</h3>
-      <h3>Number of initial options: {initialMovieOptions.length}</h3>
+    <div
+      className="mt-4 lg:mt-8 bg-bg-200 dark:bg-dark-bg-200 p-4 rounded
+      flex flex-col gap-2 sm:gap-4 md:gap-8 py-4 sm:px-4 
+    "
+    >
+      <h2 className="prose dark:prose-invert prose-2xl text-center">
+        Add a new movie
+      </h2>
 
-      <form action={handleMovieAdding} className="space-y-4">
+      <form
+        action={handleMovieAdding}
+        className="space-y-4 flex flex-col items-center
+        md:items-stretch
+        "
+      >
         <input type="hidden" name="event-id" id="event-id" value={eventId} />
 
         {
@@ -116,60 +126,58 @@ export default function NewEventMovieAdder({
         }
 
         <div>
-          <SourceToggler setValue={setExternalAPI} />
+          <div className="space-y-2">
+            <div className="flex flex-col md:flex-row md:gap-4 md:items-center md:justify-between ">
+              <label htmlFor="event-movie" className="text-lg">
+                Select movies:
+              </label>
 
-          {externalAPI && (
-            <h4 className="text-2xl bg-cyan-700 py-2 text-center">
-              Using external API
-            </h4>
-          )}
+              <SourceToggler setValue={setExternalAPI} />
+            </div>
 
-          <label htmlFor="event-movies" className="text-lg">
-            Add movie(s)
-          </label>
-
-          <AsyncSelect
-            name="event-movie"
-            id="event-movies"
-            className="bg-bg-300 dark:bg-dark-bg-300"
-            theme={(theme) => ({
-              ...theme,
-              colors: {
-                ...theme.colors,
-                // N.B.! these are manually set to the same values as in the tailwind config!
-                // TODO: use the tailwind config values instead, look up in JavaScript
-                primary25: prefersDarkMode ? '#610fff' : '#ffd299'
-              }
-            })}
-            styles={{
-              control: (baseStyles, state) => ({
-                ...baseStyles,
-                backgroundColor: 'inherit'
-              }),
-              menu: (baseStyles, state) => ({
-                ...baseStyles,
-                backgroundColor: 'inherit'
-              }),
-              input: (baseStyles, state) => ({
-                ...baseStyles,
-                color: 'inherit'
-              }),
-              singleValue: (baseStyles, state) => ({
-                ...baseStyles,
-                color: 'inherit'
-              }),
-              valueContainer: (baseStyles, state) => ({
-                ...baseStyles,
-                color: prefersDarkMode ? 'white' : 'inherit'
-              })
-            }}
-            // Cache will clear when this value changes
-            // a truthy value -> caching is enabled
-            cacheOptions={`caching-${externalAPI}`}
-            // How would we choose the defaults? Better to just leave empty?
-            // defaultOptions
-            loadOptions={loadOptions}
-          />
+            <AsyncSelect
+              name="event-movie"
+              id="event-movies"
+              className="bg-bg-300 dark:bg-dark-bg-300"
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  // N.B.! these are manually set to the same values as in the tailwind config!
+                  // TODO: use the tailwind config values instead, look up in JavaScript
+                  primary25: prefersDarkMode ? '#610fff' : '#ffd299'
+                }
+              })}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  backgroundColor: 'inherit'
+                }),
+                menu: (baseStyles, state) => ({
+                  ...baseStyles,
+                  backgroundColor: 'inherit'
+                }),
+                input: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'inherit'
+                }),
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'inherit'
+                }),
+                valueContainer: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: prefersDarkMode ? 'white' : 'inherit'
+                })
+              }}
+              // Cache will clear when this value changes
+              // a truthy value -> caching is enabled
+              cacheOptions={`caching-${externalAPI}`}
+              // How would we choose the defaults? Better to just leave empty?
+              // defaultOptions
+              loadOptions={loadOptions}
+            />
+          </div>
         </div>
 
         <button type="submit" className="btn">

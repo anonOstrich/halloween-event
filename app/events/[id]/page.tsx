@@ -1,10 +1,5 @@
-import { EventMovieAdder } from '@/components/EventModieAdder';
 import { EventMovies } from '@/components/EventMovies';
-import VotingStatistics from '@/components/VotingStatistics';
-import { getUserId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
-import { Movie, Vote } from '@prisma/client';
-import Link from 'next/link';
 
 export default async function EventPage({
   params
