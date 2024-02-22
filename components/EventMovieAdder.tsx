@@ -51,13 +51,13 @@ export default function EventMovieAdder({
   const prefersDarkMode = useDarkThemeIsPreferred();
 
   async function handleMovieAdding(data: FormData) {
-    const movieId = Number(data.getAll('event-movie'));
-    console.log('movieId: ', movieId);
+    const movieIds = data.getAll('event-movie').map((d) => Number(d));
+    console.log('movieIds: ', movieIds);
     const idType = data.get('id-type')!;
 
     const succesfullyAddedMovies = await addMoviesToEventClient(
       eventId,
-      [movieId],
+      movieIds,
       idType as IdType
     );
     console.log(`successfully added ${succesfullyAddedMovies} movies`);
@@ -178,6 +178,7 @@ export default function EventMovieAdder({
               // How would we choose the defaults? Better to just leave empty?
               // defaultOptions
               loadOptions={loadOptions}
+              isMulti
             />
           </div>
         </div>
