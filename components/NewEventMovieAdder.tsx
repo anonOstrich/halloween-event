@@ -24,8 +24,6 @@ export default function NewEventMovieAdder({
   initialMovieOptions
 }: NewEventMovieAdderProps) {
   const [externalAPI, setExternalAPI] = useState(false);
-  // const instanceId = useId();
-  const instanceId = 'hahaRandom??';
   const router = useRouter();
   const prefersDarkMode = useDarkThemeIsPreferred();
 
@@ -195,11 +193,12 @@ export function SourceToggler({ setValue }: SourceTogglerProps) {
     <div className="flex gap-2 md:gap-4 items-center">
       <input
         checked={isChecked}
-        className="peer hidden"
+        className="peer absolute opacity-0 z-index-[-10]"
         type="checkbox"
         name="use-api"
         id="use-api"
         onChange={(e) => {
+          setIsChecked(e.target.checked);
           setValue(e.target.checked);
         }}
       />
@@ -209,19 +208,20 @@ export function SourceToggler({ setValue }: SourceTogglerProps) {
         before:text-2xl md:text-4xl lg:text-4xl
         before:font-extrabold before:text-transparent
         flex justify-center items-stretch
-        peer-checked:before:text-bg-200   dark:peer-checked:before:text-dark-bg-200
+        peer-checked:before:text-text-100   dark:peer-checked:before:text-dark-text-100
         before:flex before:items-center before:justify-center
         rounded-md border-2 border-black
         bg-bg-200
         dark:bg-dark-bg-200
-        peer-checked:bg-cyan-700
-        dark:peer-checked:bg-cyan-900
+        peer-checked:bg-primary-200
+        dark:peer-checked:bg-dark-primary-200
+        peer-focus:ring-4 peer-focus:ring-primary-200 peer-focus:dark:ring-dark-primary-200
         "
         onClick={() => {
           setIsChecked(!isChecked);
+          setValue(!isChecked);
         }}
-      >
-      </div>
+      ></div>
       <label htmlFor="use-api">
         Search from{' '}
         <Link href="https://www.themoviedb.org/">The Movie Database</Link>
