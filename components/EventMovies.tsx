@@ -14,14 +14,17 @@ export async function EventMovies({ eventId }: { eventId: number }) {
     }
   });
 
-  const initialMovieOptions = await prisma.movie.findMany({
-    take: 6
-  });
-
   return (
     <div>
-      <h2>The movies you can vote for</h2>
-      <ul className="space-y-2">
+      <h2 className="prose dark:prose-invert prose-2xl mb-4 text-center">
+        The movies you can vote for
+      </h2>
+      <ul
+        className="grid 
+      grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+      gap-2
+      "
+      >
         {voteOptions.map((voteOption) => (
           <li key={voteOption.id}>
             <VotingOption
@@ -33,10 +36,7 @@ export async function EventMovies({ eventId }: { eventId: number }) {
         ))}
       </ul>
 
-      <EventMovieAdder
-        eventId={eventId}
-        initialMovieOptions={initialMovieOptions}
-      />
+      <EventMovieAdder eventId={eventId} />
     </div>
   );
 }

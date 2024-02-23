@@ -20,13 +20,9 @@ export type IdType = 'db' | 'movieAPI';
 
 interface EventMovieAdderProps {
   eventId: number;
-  initialMovieOptions: Movie[];
 }
 
-export default function EventMovieAdder({
-  eventId,
-  initialMovieOptions
-}: EventMovieAdderProps) {
+export default function EventMovieAdder({ eventId }: EventMovieAdderProps) {
   const [externalAPI, setExternalAPI] = useState(false);
   const router = useRouter();
   const prefersDarkMode = useDarkThemeIsPreferred();
@@ -65,10 +61,7 @@ export default function EventMovieAdder({
 
   async function handleMovieFetching(searchInput: string) {
     if (searchInput.trim().length <= 0) {
-      return initialMovieOptions.map((m) => ({
-        label: m.title,
-        value: m.id
-      }));
+      return [];
     }
 
     if (externalAPI) {
