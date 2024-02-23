@@ -16,7 +16,7 @@ import {
 import { voteForEventMovie } from '@/utils/api';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import { toast } from 'react-toastify';
-import VoteSymbol from './VoteSymbol';
+import { getTWThemeColor } from '@/utils/tw-theme-values';
 
 const fullConfig = resolveConfig(tailwindConfig);
 
@@ -46,8 +46,8 @@ export default function VotingWidget(props: VotingWidgetProps) {
       ? props.givenVote?.voteType == 'POSITIVE'
         ? 0
         : props.givenVote?.voteType == 'NEUTRAL'
-          ? 1
-          : 2
+        ? 1
+        : 2
       : 1;
   const [loading, setLoading] = useState(false);
   const [focusIdx, setFocusIdx] = useState(firstFocused);
@@ -80,6 +80,7 @@ export default function VotingWidget(props: VotingWidgetProps) {
   function voteToggler(option: VoteType) {
     return async () => {
       if (loading) return;
+      if (!optionsOpen) return;
       setLoading(true);
       try {
         await sendVote(option);
@@ -181,6 +182,13 @@ export default function VotingWidget(props: VotingWidgetProps) {
         onBlur={blurHandler}
         onMouseEnter={mouseEnterHandler}
         onMouseLeave={mouseLeaveHandler}
+        // Otherwise clicking will also imediately vote
+        onTouchEnd={(e) => {
+          if (!optionsOpen) {
+            mouseEnterHandler();
+            e.preventDefault();
+          }
+        }}
       >
         {!optionsOpen && <UnopenedComponent hasVoted={hasVoted} />}
 
@@ -232,6 +240,11 @@ function UnopenedComponent(props: UnopenedComponentProps) {
   );
 }
 
+type VoteSymbolProps = {
+  callback: () => void;
+  voteType: VoteType;
+};
+
 interface VoteSymbolListProps {
   listRef: React.RefObject<HTMLUListElement>;
   direction: Direction;
@@ -272,8 +285,6 @@ function VoteSymbolList(props: VoteSymbolListProps) {
                 focus:text-4xl
                 "
             style={{
-              //backgroundColor: hasVotedForThis ? "red" : "blue",
-              // fontSize: vote === option ? "200%" : "inherit",
               width: direction == 'row' ? '33.333%' : '100%',
               height: direction == 'column' ? '33.333%' : '100%'
             }}
@@ -303,5 +314,31 @@ function VoteSymbolList(props: VoteSymbolListProps) {
         );
       })}
     </ul>
+  );
+}
+
+function VoteSymbol(props: VoteSymbolProps) {
+  const darkThemeIsPreferred = useDarkThemeIsPreferred();
+
+  const voteColors: Map<VoteType, string> = new Map([
+    ['POSITIVE', getTWThemeColor('success', darkThemeIsPreferred)],
+    ['NEUTRAL', 'current'],
+    ['NEGATIVE', getTWThemeColor('danger', darkThemeIsPreferred)]
+  ]);
+
+  const symbol = voteSymbols.get(props.voteType);
+  return (
+    <div
+      className="h-full w-full flex justify-center items-center"
+      style={{
+        backgroundColor: voteColors.get(props.voteType)
+      }}
+      onClick={(e) => {
+        console.log('clicked!');
+        props.callback();
+      }}
+    >
+      {symbol}
+    </div>
   );
 }
