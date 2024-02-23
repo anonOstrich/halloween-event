@@ -2,38 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 @layer base {
-  input, textarea {
-    @apply bg-bg-300
+  input,
+  textarea {
+    @apply bg-bg-300;
   }
 }
-
-
 
 @layer components {
   .btn {
-    @apply border-2 border-primary-100 dark:border-dark-primary-100 py-4 px-8 rounded transition-all hover:text-bg-100 dark:hover:text-dark-bg-100 hover:bg-primary-100 dark:hover:bg-dark-primary-100 text-center
+    @apply border-2 border-primary-100 dark:border-dark-primary-100 py-4 px-8 rounded transition-all hover:text-bg-100 dark:hover:text-dark-bg-100 hover:bg-primary-100 dark:hover:bg-dark-primary-100 text-center;
   }
-  
 
-  
   .form {
-    @apply m-auto flex flex-col items-start justify-center gap-4 p-8
+    @apply m-auto flex flex-col items-start justify-center gap-4 p-8;
   }
-  
-  .form input, .form textarea {
 
-    @apply p-2 text-inherit border bg-bg-300 bg-opacity-90 dark:bg-dark-bg-300
-
-
+  .form input,
+  .form textarea {
+    @apply p-2 text-inherit border bg-bg-300 bg-opacity-90 dark:bg-dark-bg-300;
   }
-  
+
   .form button {
-    @apply mt-4 border-2 border-primary-100 dark:border-dark-primary-100 py-2 px-4 rounded transition-all hover:text-bg-100 hover:text-dark-bg-100 hover:bg-primary-100 hover:dark:bg-dark-primary-100
+    @apply mt-4 border-2 border-primary-100 dark:border-dark-primary-100 py-2 px-4 rounded transition-all hover:text-bg-100 hover:text-dark-bg-100 hover:bg-primary-100 hover:dark:bg-dark-primary-100;
   }
-
 }
-

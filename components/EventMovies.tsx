@@ -1,37 +1,42 @@
-import { prisma } from "@/utils/db"
-import { EventMovieAdder } from "./EventModieAdder"
-import { VotingOption } from "./VotingOption"
+import { prisma } from '@/utils/db';
+import { VotingOption } from './VotingOption';
+import EventMovieAdder from './EventMovieAdder';
 
 export async function EventMovies({ eventId }: { eventId: number }) {
-    const voteOptions = await prisma.movieEvent.findMany({
-        where: {
-            eventId: eventId
-        },
-        select: {
-            id: true,
-            movie: true,
-            votes: true
-        }
-    })
+  const voteOptions = await prisma.movieEvent.findMany({
+    where: {
+      eventId: eventId
+    },
+    select: {
+      id: true,
+      movie: true,
+      votes: true
+    }
+  });
 
-    const initialMovieOptions = await prisma.movie.findMany({
-        take: 6
-    })
+  return (
+    <div>
+      <h2 className="prose dark:prose-invert prose-2xl mb-4 text-center">
+        The movies you can vote for
+      </h2>
+      <ul
+        className="grid 
+      grid-cols-1 md:grid-cols-2
+      gap-2
+      "
+      >
+        {voteOptions.map((voteOption) => (
+          <li key={voteOption.id}>
+            <VotingOption
+              movieEventId={voteOption.id}
+              votes={voteOption.votes}
+              movie={voteOption.movie}
+            />
+          </li>
+        ))}
+      </ul>
 
-
-    return (<div>
-        <h2>The movies you can vote for</h2>
-        <ul className="space-y-2">
-            {
-                voteOptions.map(voteOption => (<li key={voteOption.id}>
-                    <VotingOption movieEventId={voteOption.id} votes={voteOption.votes} movie={voteOption.movie} />
-                </li>))
-            }
-        </ul>
-
-
-        <EventMovieAdder eventId={eventId} initialMovieOptions={initialMovieOptions} />
-
-    </div>)
+      <EventMovieAdder eventId={eventId} />
+    </div>
+  );
 }
-
