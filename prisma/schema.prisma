@@ -49,6 +49,8 @@ model Movie {
     movieEvent MovieEvent[]
 
     reviews Review[]
+
+    @@unique([movieDBId])
 }
 
 // For now: review connected to movie & user, can pretty easily add different aspects to the review

@@ -1,11 +1,14 @@
 import { fetchMoviesDetailFromExternalAPI } from '@/app/api/movies/search/route';
+import errorMessage from '@/app/api/utils/responses';
 import {
+  MovieDetails,
   MovieDetailsWithId,
   MovieDetailsWithMovieDBId,
   parseMovieDetailsArray
 } from '@/app/api/utils/type-utils';
 import { getUserId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
+import { Movie } from '@/utils/types';
 import { NextRequest } from 'next/server';
 
 export async function POST(
@@ -17,18 +20,17 @@ export async function POST(
   const eventId = Number(params.id);
   const body = await req.json();
 
-  const information = parseMovieDetailsArray(body.movieIds);
+  let information: MovieDetails[] | null = null;
+  // TODO: a global error handler, throw errors with message and status code => return errorMessage with those details.
+  try {
+    information = parseMovieDetailsArray(body.movieIds);
+  } catch (e: any) {
+    return errorMessage(e.message, 400);
+  }
 
   if (information.length > 10) {
     //TODO: choose a limit, warn on the client side as well
-    return Response.json(
-      {
-        error: 'You can only add 10 movies at a time'
-      },
-      {
-        status: 400
-      }
-    );
+    return errorMessage('You can only add 10 movies at a time', 400);
   }
 
   // 1. CHECK THAT ALL THE ID MOVIES ARE VALID
@@ -44,7 +46,7 @@ export async function POST(
   });
 
   if (countInDatabase < moviesWithIds.length) {
-    throw new Error(':/ sucks to suck');
+    return errorMessage('Some of the movies are not in the database', 400);
   }
 
   // 2. FIGURE OUT WHICH EXTERNAL MOVIES ARE ALREADY IN THE DATABASE
@@ -60,15 +62,28 @@ export async function POST(
     }
   });
 
+  console.log('externalIdMoviesAlreadyInDB', externalIdMoviesAlreadyInDB);
+
   // 3. CREATE THE MOVIES THAT ARE NOT IN THE DATABASE
   const moviesToCreate = moviesWithMovieDBIds.filter(
     (m) =>
       !externalIdMoviesAlreadyInDB.map((m) => m.movieDBId).includes(m.movieDBId)
   );
 
-  const moviesToCreateDetails = await fetchMoviesDetailFromExternalAPI(
-    moviesToCreate.map((m) => m.movieDBId)
-  );
+  console.log('moviesToCreate', moviesToCreate);
+
+  let moviesToCreateDetails: Movie[] | null = null;
+
+  try {
+    moviesToCreateDetails = await fetchMoviesDetailFromExternalAPI(
+      moviesToCreate.map((m) => m.movieDBId)
+    );
+  } catch (e) {
+    return errorMessage(
+      'Could not fetch the movies from the external API',
+      500
+    );
+  }
 
   const createdMovies = await prisma.movie.createMany({
     data: moviesToCreateDetails.map((m) => ({

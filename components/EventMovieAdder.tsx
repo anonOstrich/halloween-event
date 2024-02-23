@@ -13,6 +13,7 @@ import {
 } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 // For testing only
 // async function fetchMoviesA(searchInput: string) {
@@ -63,6 +64,8 @@ export default function EventMovieAdder({
     console.log(`successfully added ${succesfullyAddedMovies} movies`);
     if (succesfullyAddedMovies > 0) {
       router.refresh();
+    } else {
+      toast.error('All the movies are already in the event!');
     }
   }
 
