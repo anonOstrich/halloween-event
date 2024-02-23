@@ -62,15 +62,11 @@ export async function POST(
     }
   });
 
-  console.log('externalIdMoviesAlreadyInDB', externalIdMoviesAlreadyInDB);
-
   // 3. CREATE THE MOVIES THAT ARE NOT IN THE DATABASE
   const moviesToCreate = moviesWithMovieDBIds.filter(
     (m) =>
       !externalIdMoviesAlreadyInDB.map((m) => m.movieDBId).includes(m.movieDBId)
   );
-
-  console.log('moviesToCreate', moviesToCreate);
 
   let moviesToCreateDetails: Movie[] | null = null;
 

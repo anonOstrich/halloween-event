@@ -7,13 +7,13 @@ export async function fetchMoviesDetailFromExternalAPI(
   movieAPIIds: number[]
 ): Promise<Movie[]> {
   // Will have to do 1 request for each movie, I believe...
-  if (movieAPIIds.length > 5) {
+  if (movieAPIIds.length > 10) {
     return [];
   }
   const access_token = process.env['MOVIE_ACCESS_TOKEN'];
 
   const promises = movieAPIIds.map((id) =>
-    fetch(`https://api.themoviedb.org/3/movie/${movieAPIIds[0]}`, {
+    fetch(`https://api.themoviedb.org/3/movie/${id}`, {
       headers: {
         accept: 'application/json',
         Authorization: `Bearer ${access_token}`
