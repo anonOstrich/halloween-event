@@ -14,27 +14,7 @@ import {
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-
-// For testing only
-// async function fetchMoviesA(searchInput: string) {
-//   const movies = [
-//     { label: 'aa', value: 1 },
-//     { label: 'bb', value: 2 },
-//     { label: 'cc', value: 3 }
-//   ];
-
-//   return movies.filter((m) => m.label.includes(searchInput));
-// }
-
-// async function fetchMoviesB(searchInput: string) {
-//   const movies = [
-//     { label: 'a', value: 1 },
-//     { label: 'b', value: 2 },
-//     { label: 'c', value: 3 }
-//   ];
-
-//   return movies.filter((m) => m.label.includes(searchInput));
-// }
+import { getTWThemeColor } from '@/utils/tw-theme-values';
 
 export type IdType = 'db' | 'movieAPI';
 
@@ -53,7 +33,6 @@ export default function EventMovieAdder({
 
   async function handleMovieAdding(data: FormData) {
     const movieIds = data.getAll('event-movie').map((d) => Number(d));
-    console.log('movieIds: ', movieIds);
     const idType = data.get('id-type')!;
 
     const succesfullyAddedMovies = await addMoviesToEventClient(
@@ -61,7 +40,6 @@ export default function EventMovieAdder({
       movieIds,
       idType as IdType
     );
-    console.log(`successfully added ${succesfullyAddedMovies} movies`);
     if (succesfullyAddedMovies > 0) {
       router.refresh();
     } else {
@@ -168,18 +146,46 @@ export default function EventMovieAdder({
                 }),
                 singleValue: (baseStyles, state) => ({
                   ...baseStyles,
-                  color: 'inherit'
+                  color: 'inherit',
+                  border: '2px solid red'
                 }),
                 valueContainer: (baseStyles, state) => ({
                   ...baseStyles,
                   color: prefersDarkMode ? 'white' : 'inherit'
+                }),
+                multiValueLabel: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'inherit',
+                  backgroundColor: getTWThemeColor(
+                    'accent-200',
+                    prefersDarkMode
+                  ),
+                  padding: '0 1rem'
+                }),
+                multiValueRemove: (baseStyles, state) => ({
+                  ...baseStyles,
+                  backgroundColor: getTWThemeColor('bg-300', prefersDarkMode),
+                  color: getTWThemeColor('text-100', prefersDarkMode),
+                  // border: '3px solid white',
+                  borderLeft: '3px solid white',
+                  ':hover': {
+                    backgroundColor: getTWThemeColor('danger', prefersDarkMode)
+                  }
+                }),
+                multiValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  border: `4px solid ${getTWThemeColor(
+                    'bg-200',
+                    prefersDarkMode
+                  )}`,
+                  margin: '2px 1px',
+                  borderRadius: '5px',
+                  fontSize: '1.2rem'
                 })
               }}
               // Cache will clear when this value changes
               // a truthy value -> caching is enabled
               cacheOptions={`caching-${externalAPI}`}
-              // How would we choose the defaults? Better to just leave empty?
-              // defaultOptions
               loadOptions={loadOptions}
               isMulti
             />
