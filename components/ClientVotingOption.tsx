@@ -3,9 +3,8 @@
 import { Vote, VoteType } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import VotingStatistics from './VotingStatistics';
-import VotingWidget from './VotingWidget';
+import { VotingWidget } from './voting-widget';
 import { getVotesForEventMovie, voteForEventMovie } from '@/utils/api';
-import { prisma } from '@/utils/db';
 
 const name = 'ghaha';
 

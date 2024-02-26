@@ -1,14 +1,6 @@
-'use client';
-import { VoteType } from '@prisma/client';
-// N.B. This has some performance impact
-// https://tailwindcss.com/docs/configuration#referencing-in-java-script
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '@/tailwind.config';
 import { BarGraph } from './BarGraph';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
 import { getTWThemeColor } from '@/utils/tw-theme-values';
-
-const fullConfig = resolveConfig(tailwindConfig);
 
 interface VotingStatisticsProps {
   votes: {
@@ -39,11 +31,7 @@ export default function VotingStatistics(props: VotingStatisticsProps) {
   const posColor = getTWThemeColor('success', darkThemeIsPreferred);
   const negColor = getTWThemeColor('danger', darkThemeIsPreferred);
 
-  const neutralColor =
-    //@ts-ignore
-    fullConfig.theme?.colors[
-      darkThemeIsPreferred ? 'dark-primary-200' : 'primary-200'
-    ];
+  const neutralColor = getTWThemeColor('primary-200', darkThemeIsPreferred);
 
   return (
     <div className="flex flex-col md:flex-row sm:gap-2 md:gap-4 lg:gap-16 items-start md:items-center ">
