@@ -1,4 +1,4 @@
-import { Vote, VoteType } from '@prisma/client';
+import { MovieEvent, Vote, VoteType } from '@prisma/client';
 import { Movie } from './types';
 import { getUserId } from './auth';
 import { IdType } from '@/components/EventMovieAdder';
@@ -112,4 +112,23 @@ export async function getVotesForEventMovie(
   const response = await fetch(`/api/events/${movieEventId}/votes`);
   const { data } = await response.json();
   return data.votes;
+}
+
+export async function removeMovieFromEvent(
+  movieEventId: number
+): Promise<MovieEvent> {
+  const response = await fetch(`/api/events/${movieEventId}/removeMovie`, {
+    method: 'DELETE',
+    body: JSON.stringify({
+      movieEventId
+    })
+  });
+
+  if (response.status !== 200) {
+    throw new Error(response.statusText);
+  }
+
+  const { data } = await response.json();
+  console.log('data from the backend:', data);
+  return data;
 }
