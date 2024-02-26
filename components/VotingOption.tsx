@@ -1,9 +1,7 @@
 import { getUserId } from '@/utils/auth';
 import { Movie, Vote } from '@prisma/client';
-import VotingStatistics from './VotingStatistics';
 import Link from 'next/link';
-import VotingWidget from './VotingWidget';
-import { useState } from 'react';
+
 import { ClientVotingOption } from './ClientVotingOption';
 
 interface VotingOptionProps {
