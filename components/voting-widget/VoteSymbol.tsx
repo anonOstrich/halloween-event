@@ -1,11 +1,6 @@
-'use client';
-
-import tailwindConfig from '@/tailwind.config';
 import { useDarkThemeIsPreferred } from '@/utils/hooks';
+import { getTWThemeColor } from '@/utils/tw-theme-values';
 import { VoteType } from '@prisma/client';
-import resolveConfig from 'tailwindcss/resolveConfig';
-
-const fullConfig = resolveConfig(tailwindConfig);
 
 const voteSymbols: Map<VoteType, string> = new Map([
   ['POSITIVE', '+1'],
@@ -22,19 +17,9 @@ export default function VoteSymbol(props: VoteSymbolProps) {
   const darkThemeIsPreferred = useDarkThemeIsPreferred();
 
   const voteColors: Map<VoteType, string> = new Map([
-    [
-      'POSITIVE',
-      fullConfig.theme?.colors![
-        darkThemeIsPreferred ? 'dark-success' : 'success'
-      ].toString() ?? 'yellow'
-    ],
-    ['NEUTRAL', 'current'],
-    [
-      'NEGATIVE',
-      fullConfig.theme?.colors![
-        darkThemeIsPreferred ? 'dark-danger' : 'danger'
-      ].toString() ?? 'yellow'
-    ]
+    ['POSITIVE', getTWThemeColor('success', darkThemeIsPreferred)],
+    ['NEUTRAL', getTWThemeColor('primary-200', darkThemeIsPreferred)],
+    ['NEGATIVE', getTWThemeColor('danger', darkThemeIsPreferred)]
   ]);
 
   const symbol = voteSymbols.get(props.voteType);
